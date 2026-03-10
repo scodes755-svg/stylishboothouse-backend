@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="WhatsApp Image 2026-01-15 at 15.45.48_ecaecb15.jpg">
+    <link rel="icon" type="image/png" sizes="16x16" href="WhatsApp Image 2026-01-15 at 15.45.48_ecaecb15.jpg">
+    <title>Return & Exchange Policy | Stylish Boot House</title>
+    <meta name="description"
+        content="Return and exchange policy of Stylish Boot House. No refund policy. Exchange available within 3 days.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f4f4;
+            color: #333;
+        }
+
+        .policy-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .brand {
+            text-align: center;
+            color: #c00;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .policy-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-left: 4px solid #c00;
+            padding-left: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        .note {
+            margin-top: 20px;
+            background: #fff3f3;
+            border-left: 4px solid #c00;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .agree-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .agree-section label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        #agreeBtn {
+            padding: 12px 22px;
+            background: #c00;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+            opacity: 0.6;
+            font-size: 15px;
+        }
+
+        #agreeBtn.active {
+            cursor: pointer;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="policy-container">
+
+        <h1>Return & Exchange Policy</h1>
+        <p class="brand">Stylish Boot House</p>
+
+        <div class="policy-box">
+
+            <h3>No Refund Policy</h3>
+            <p>We do not offer refunds on any products.</p>
+
+            <h3>Exchange Policy (Within 3 Days)</h3>
+            <ul>
+                <li>Exchange allowed within 3 days of delivery</li>
+                <li>Product must be unused and in original packaging</li>
+            </ul>
+
+            <h3>Exchange Allowed If</h3>
+            <ul>
+                <li>Wrong size delivered</li>
+                <li>Wrong product delivered</li>
+                <li>Manufacturing defect</li>
+            </ul>
+
+            <h3>Exchange Not Allowed If</h3>
+            <ul>
+                <li>Product used or damaged</li>
+                <li>After 3 days of delivery</li>
+                <li>Sale / discounted items</li>
+            </ul>
+
+            <div class="note">
+                ⚠ Color may vary slightly due to screen resolution.
+            </div>
+
+            <!-- AGREE SECTION -->
+            <div class="agree-section">
+                <label>
+                    <input type="checkbox" id="agreeCheck">
+                    I have read and agree to the Return & Exchange Policy
+                </label>
+
+                <button id="agreeBtn" disabled>I Agree & Continue</button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const agreeCheck = document.getElementById("agreeCheck");
+        const agreeBtn = document.getElementById("agreeBtn");
+
+        agreeCheck.addEventListener("change", () => {
+            agreeBtn.disabled = !agreeCheck.checked;
+            agreeBtn.classList.toggle("active", agreeCheck.checked);
+        });
+
+        agreeBtn.addEventListener("click", () => {
+            // 🔐 save acceptance with timestamp
+            localStorage.setItem("policyAccepted", "true");
+            localStorage.setItem("policyAcceptedAt", new Date().toISOString());
+
+            // ✅ go back to payment page
+            window.location.href = "payment.html";
+        });
+    </script>
+</body>
+
+</html>

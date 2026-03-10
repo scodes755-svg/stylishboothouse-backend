@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --accent: #b22222;
+            --dark: #111;
+            --muted: #888;
+            --bg: #fafafa;
+            --radius: 20px;
+            --shadow-light: rgba(0, 0, 0, 0.06);
+            --shadow-medium: rgba(0, 0, 0, 0.12);
+        }
+
+        /* BODY */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            margin: 0;
+        }
+
+        /* PRODUCT DETAIL GRID */
+        .product-detail {
+            max-width: 1200px;
+            margin: auto;
+            padding: 64px 20px;
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap: 60px;
+        }
+
+        /* ---------- GALLERY ---------- */
+        .product-gallery {
+            position: sticky;
+            top: 80px;
+        }
+
+        .main-img {
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: 0 14px 28px var(--shadow-light), 0 8px 12px var(--shadow-medium);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .main-img.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* THUMBNAILS */
+        .thumbs {
+            display: flex;
+            gap: 14px;
+            margin-top: 18px;
+            overflow-x: auto;
+        }
+
+        .thumbs img {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            opacity: 0.6;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .thumbs img:hover {
+            opacity: 1;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px var(--shadow-light);
+        }
+
+        /* ---------- PRODUCT INFO ---------- */
+        .product-data h1 {
+            font-size: clamp(26px, 3vw, 34px);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* PRICE */
+        .price-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .old-price {
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .new-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* OPTIONS */
+        .option {
+            margin-bottom: 28px;
+        }
+
+        .option p {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        /* SIZES */
+        .sizes button {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #e5e5e5;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sizes button.active {
+            background: #000;
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 6px 18px var(--shadow-light);
+        }
+
+        /* COLORS */
+        .colors {
+            display: flex;
+            gap: 16px;
+        }
+
+        .color {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .color.active {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+
+        /* QUANTITY */
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin: 36px 0;
+        }
+
+        .quantity button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #eee;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .quantity button:hover {
+            background: #000;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        /* ACTION BUTTONS */
+        .actions {
+            display: flex;
+            gap: 18px;
+        }
+
+        .actions button {
+            flex: 1;
+            padding: 16px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-cart {
+            background: #000;
+            color: #fff;
+        }
+
+        .add-cart:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 25px var(--shadow-medium);
+        }
+
+        .buy-now {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .buy-now:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(178, 34, 34, 0.4);
+        }
+
+        /* MOBILE */
+        @media(max-width:768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                padding: 32px 16px;
+            }
+
+            .thumbs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="product-detail">
+
+        <!-- GALLERY -->
+        <div class="product-gallery">
+            <img id="mainImg" class="main-img active" src="kier-in-sight-archives-b4Xk6bzgQWU-unsplash.jpg"
+                alt="Main Product Image">
+
+            <div class="thumbs" id="thumbs">
+                <img src="kier-in-sight-archives-b4Xk6bzgQWU-unsplash.jpg" onclick="changeMain(this)">
+                <img src="paul-gaudriault-a-QH9MAAVNI-unsplash (1).jpg" onclick="changeMain(this)">
+                <img src="images/black/back.jpg" onclick="changeMain(this)">
+            </div>
+        </div>
+
+        <!-- DETAILS -->
+        <div class="product-data">
+            <h1>Luxury Leather Boot</h1>
+
+            <div class="price-box">
+                <span class="old-price">Rs. 7,999</span>
+                <span class="new-price">Rs. 5,599</span>
+            </div>
+
+            <!-- COLORS -->
+            <div class="option">
+                <p>Color</p>
+                <div class="colors">
+                    <span class="color black" onclick="changeColor('black')"></span>
+                    <span class="color brown" onclick="changeColor('brown')"></span>
+                </div>
+            </div>
+
+            <!-- SIZE -->
+            <div class="option">
+                <p>Size</p>
+                <div class="sizes">
+                    <button>38</button>
+                    <button>39</button>
+                    <button>40</button>
+                    <button>41</button>
+                </div>
+            </div>
+
+            <!-- QUANTITY -->
+            <div class="quantity">
+                <button onclick="qty(-1)">−</button>
+                <span id="qty">1</span>
+                <button onclick="qty(1)">+</button>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="actions">
+                <button class="add-cart">Add to Cart</button>
+                <button class="buy-now">Buy Now</button>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        const images = {
+            black: [
+                "images/black/front.jpg",
+                "images/black/side.jpg",
+                "images/black/back.jpg"
+            ],
+            brown: [
+                "images/brown/front.jpg",
+                "images/brown/side.jpg",
+                "images/brown/back.jpg"
+            ]
+        };
+
+        function changeMain(el) {
+            const main = document.getElementById("mainImg");
+            main.classList.remove("active");
+
+            setTimeout(() => {
+                main.src = el.src;
+                main.classList.add("active");
+            }, 200);
+        }
+
+        function changeColor(color) {
+            const main = document.getElementById("mainImg");
+            const thumbs = document.getElementById("thumbs");
+
+            thumbs.innerHTML = "";
+
+            images[color].forEach(src => {
+                const img = document.createElement("img");
+                img.src = src;
+                img.onclick = () => changeMain(img);
+                thumbs.appendChild(img);
+            });
+
+            main.classList.remove("active");
+            setTimeout(() => {
+                main.src = images[color][0];
+                main.classList.add("active");
+            }, 200);
+        }
+
+        let q = 1;
+        function qty(val) {
+            q += val;
+            if (q < 1) q = 1;
+            document.getElementById("qty").innerText = q;
+        }
+        let selectedColor = "Black";
+        let selectedSize = null;
+        let quantity = 1;
+
+        /* Color select */
+        document.querySelectorAll(".color").forEach(c => {
+            c.onclick = () => {
+                document.querySelectorAll(".color").forEach(x => x.classList.remove("active"));
+                c.classList.add("active");
+                selectedColor = c.dataset.color;
+            };
+        });
+
+        /* Size select */
+        document.querySelectorAll(".sizes button").forEach(b => {
+            b.onclick = () => {
+                document.querySelectorAll(".sizes button").forEach(x => x.classList.remove("active"));
+                b.classList.add("active");
+                selectedSize = b.dataset.size;
+            };
+        });
+
+        /* Quantity */
+        function qty(v) {
+            quantity += v;
+            if (quantity < 1) quantity = 1;
+            document.getElementById("qty").innerText = quantity;
+        }
+
+        /* ADD TO CART */
+        document.querySelector(".add-cart").onclick = () => {
+            if (!selectedSize) {
+                alert("Please select size");
+                return;
+            }
+
+            const product = {
+                id: "boot-001",
+                name: "Luxury Leather Boot",
+                price: 5599,
+                color: selectedColor,
+                size: selectedSize,
+                qty: quantity,
+                image: document.getElementById("mainImg").src
+            };
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.push(product);
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            alert("Added to cart ✔");
+        };
+    </script>
+</body>
+
+</html>

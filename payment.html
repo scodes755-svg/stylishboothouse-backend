@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="WhatsApp Image 2026-01-15 at 15.45.48_ecaecb15.jpg">
+    <link rel="icon" type="image/png" sizes="16x16" href="WhatsApp Image 2026-01-15 at 15.45.48_ecaecb15.jpg">
+    <!-- Title -->
+    <title>Secure Checkout | Stylish Boot House</title>
+</head>
+<style>
+    /* RESET */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", system-ui, sans-serif;
+    }
+
+    /* =========================
+   DESKTOP / LAPTOP NAVBAR
+========================= */
+
+    .navbar {
+        width: 100%;
+        background: #000;
+        color: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* ===== FORCE DROPDOWN RESET ===== */
+    .navbar ul,
+    .navbar li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    /* Parent */
+    .navbar .dropdown {
+        position: relative !important;
+    }
+
+    /* Dropdown menu */
+    .navbar .dropdown-menu {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+
+        display: none !important;
+        flex-direction: column !important;
+
+        background: #111 !important;
+        min-width: 200px !important;
+
+        padding: 6px 0 !important;
+        border-radius: 6px !important;
+
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        z-index: 9999 !important;
+    }
+
+    /* Hover show */
+    .navbar .dropdown:hover>.dropdown-menu {
+        display: flex !important;
+    }
+
+    /* Links */
+    .navbar .dropdown-menu li a {
+        display: block !important;
+        width: 100% !important;
+
+        padding: 10px 16px !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        background: transparent;
+    }
+
+    /* Hover effect */
+    .navbar .dropdown-menu li a:hover {
+        background: red;
+        color: #fff;
+    }
+
+    /* =========================
+   LOGO WITH CIRCLE BADGE
+========================= */
+
+    .logo-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        /* 🔥 LEFT side fix */
+        justify-content: flex-start;
+
+        /* agar navbar ke andar hai */
+        position: relative;
+        left: 0;
+    }
+
+    /* Logo Box */
+    .logo-box {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Logo Image */
+    .logo-box img {
+        width: 50px;
+        /* adjust as needed */
+        height: 50px;
+        object-fit: contain;
+        border-radius: 50%;
+        /* round logo if needed */
+        border: 2px solid red;
+        transition: transform 0.3s ease;
+    }
+
+    /* Circle Badge */
+    .logo-badge {
+        position: absolute;
+        top: 0;
+        right: -10%;
+        /* thoda right se bahar */
+        transform: translate(50%, -50%);
+        background: red;
+        color: #fff;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 6px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        min-height: 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    /* Badge scaling with logo */
+    .logo-box img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .logo-box .logo-badge {
+        width: calc(50px / 2);
+        /* half of logo width */
+        height: calc(50px / 2);
+        font-size: calc(50px / 6);
+    }
+
+    .logo-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        /* vertical center alignment */
+        gap: 8px;
+        /* logo aur badge ke beech space */
+    }
+
+    /* Logo Image */
+    .logo-box img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        border-radius: 50%;
+    }
+
+    /* Circle Badge */
+    .logo-badge {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #fff;
+        background: red;
+        border-radius: 50%;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* MOBILE OPTIMIZED */
+    @media (max-width: 768px) {
+        .logo-box img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo-badge {
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+        }
+    }
+
+    /* MOBILE OPTIMIZED */
+    @media (max-width: 768px) {
+        .logo-box img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .logo-box .logo-badge {
+            width: calc(40px / 2);
+            height: calc(40px / 2);
+            font-size: calc(40px / 6);
+        }
+    }
+
+    /* BRAND CONTAINER */
+    .brand-container {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+
+    /* Stylish Text */
+    .stylish-text {
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: red;
+        text-transform: uppercase;
+        -webkit-text-stroke: 1px white;
+        /* white border around letters */
+        letter-spacing: 1px;
+        margin: 0;
+    }
+
+    .stylish-text h1 span {
+        color: red;
+    }
+
+    /* Boot House Text */
+    .boot-house-text {
+        font-family: sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        color: #fff;
+        /* white color */
+        margin: 0;
+        letter-spacing: 0.5px;
+    }
+
+    .since {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 10px;
+        font-weight: 400;
+        color: #ddd;
+        margin: 4px 0 0 0;
+        letter-spacing: 0.4px;
+    }
+
+    /* MOBILE OPTIMIZED */
+    @media (max-width: 768px) {
+        .logo-group {
+            gap: 8px;
+        }
+
+        .logo-box img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .stylish-text {
+            font-size: 20px;
+        }
+
+        .boot-house-text {
+            font-size: 14px;
+        }
+    }
+
+    /* HIDE MOBILE TOGGLE ON DESKTOP */
+    .menu-toggle {
+        display: none;
+    }
+
+    /* NAV LINKS */
+    .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+    }
+
+    .nav-links li {
+        position: relative;
+    }
+
+    .nav-item {
+        color: #fff;
+        text-decoration: none;
+        font-size: 15px;
+        padding: 6px 0;
+        position: relative;
+    }
+
+    /* UNDERLINE HOVER EFFECT */
+    .nav-item::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0%;
+        height: 2px;
+        background: red;
+        transition: 0.3s ease;
+    }
+
+    .nav-item:hover::after {
+        width: 100%;
+    }
+
+    /* DROPDOWN */
+    .dropdown-menu {
+        position: absolute;
+        top: 130%;
+        left: 0;
+        background: #111;
+        min-width: 180px;
+        display: none;
+        flex-direction: column;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .dropdown-menu li a {
+        padding: 12px 15px;
+        display: block;
+        color: #fff;
+        font-size: 14px;
+        border-bottom: 1px solid #222;
+    }
+
+    .dropdown-menu li a:hover {
+        background: red;
+        color: #fff;
+    }
+
+    /* SHOW DROPDOWN ON HOVER */
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+
+    .search-btn {
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .search-input {
+        width: 0;
+        opacity: 0;
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: none;
+        outline: none;
+        transition: 0.3s ease;
+    }
+
+    /* SEARCH HOVER EXPAND */
+    .search-wrap:hover .search-input {
+        width: 180px;
+        opacity: 1;
+    }
+
+    /* CART OVERLAY */
+    #cartOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.3s ease;
+        z-index: 999;
+    }
+
+    /* CART PANEL */
+    #cartPanel {
+        position: fixed;
+        top: 0;
+        right: -420px;
+        width: 360px;
+        max-width: 90%;
+        height: 100vh;
+        background: #fff;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        transition: right 0.35s ease;
+        z-index: 1000;
+    }
+
+    /* ACTIVE STATES */
+    #cartPanel.active {
+        right: 0;
+    }
+
+    #cartOverlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* HEADER */
+    .cart-header {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+    }
+
+    #closeCart {
+        font-size: 26px;
+        cursor: pointer;
+    }
+
+    /* CONTENT */
+    .cart-content {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+    /* FOOTER */
+    .cart-footer {
+        padding: 16px;
+        border-top: 1px solid #eee;
+    }
+
+    .checkout-btn {
+        display: block;
+        margin-top: 10px;
+        text-align: center;
+        background: #000;
+        color: #fff;
+        padding: 12px;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+    .checkout-btn:hover {
+        background: red;
+    }
+
+    /* MOBILE NAVBAR */
+    @media (max-width: 768px) {
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            position: relative;
+            background: #000;
+            z-index: 1100;
+        }
+
+        /* Hamburger */
+        #mobile-menu {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 25px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 1200;
+        }
+
+        #mobile-menu .bar {
+            height: 3px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        #mobile-menu.is-active .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        #mobile-menu.is-active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        #mobile-menu.is-active .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Nav links */
+        .nav-links {
+            position: fixed;
+            /* fixed to prevent scroll jump */
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100vh;
+            flex-direction: column;
+            background: #111;
+            transition: left 0.3s ease;
+            padding-top: 70px;
+            z-index: 1050;
+            overflow-y: auto;
+        }
+
+        .nav-links.active {
+            left: 0;
+        }
+
+        .nav-links li {
+            width: 100%;
+            position: relative;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 16px;
+            color: #fff;
+            font-size: 16px;
+            text-decoration: none;
+            border-bottom: 1px solid red;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: red;
+            color: #fff;
+        }
+
+        /* Dropdowns */
+        .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            background: #222;
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: flex;
+        }
+
+        .dropdown-menu a {
+            padding: 12px 20px;
+            font-size: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .dropdown-menu a:hover {
+            background: red;
+            color: #fff;
+        }
+
+        /* Search bar */
+        .search-wrap {
+            padding: 12px 16px;
+            border-bottom: 1px solid red;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            display: none;
+        }
+
+        /* Cart icon */
+        .nav-cart {
+            font-size: 22px;
+            color: #fff;
+            padding: 14px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid red;
+        }
+    }
+
+    /* Location Dropdown */
+    .location-dropdown {
+        position: relative;
+    }
+
+    /* Dropdown container (hidden by default) */
+    .dropdown-map {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 320px;
+        max-width: 90vw;
+        /* mobile friendly */
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        display: none;
+        /* hidden initially */
+        z-index: 999;
+    }
+
+    /* Show map on hover (desktop) */
+    .location-dropdown:hover .dropdown-map {
+        display: block;
+    }
+
+    /* Arrow styling */
+    .location-dropdown .arrow {
+        margin-left: 4px;
+    }
+
+    /* MOBILE: Click to open */
+    @media (max-width: 768px) {
+        .dropdown-map {
+            position: static;
+            transform: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+    }
+
+
+    body {
+        background: #f4f5f7;
+        color: #111;
+    }
+
+    /* MAIN WRAPPER */
+    .checkout-wrapper {
+        max-width: 1200px;
+        margin: auto;
+        padding: 60px 5%;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 48px;
+    }
+
+    /* LEFT FORM */
+    .checkout-form {
+        background: #ffffff;
+        padding: 36px;
+        border-radius: 22px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.06);
+    }
+
+    .checkout-form h2 {
+        font-size: 28px;
+        margin-bottom: 28px;
+    }
+
+    /* FORM BLOCK */
+    .form-block {
+        margin-bottom: 32px;
+    }
+
+    .form-block h3 {
+        font-size: 18px;
+        margin-bottom: 14px;
+        font-weight: 600;
+    }
+
+    /* INPUTS */
+    .checkout-form input {
+        width: 100%;
+        padding: 15px 16px;
+        margin-bottom: 14px;
+        border-radius: 14px;
+        border: 1.5px solid #e2e2e2;
+        font-size: 15px;
+        transition: 0.3s ease;
+    }
+
+    .checkout-form input:focus {
+        outline: none;
+        border-color: #000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* PAYMENT OPTIONS */
+    .pay-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px;
+        border-radius: 16px;
+        border: 2px solid #ededed;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        background: #fafafa;
+    }
+
+    .pay-option:hover {
+        border-color: #000;
+    }
+
+    .pay-option input {
+        accent-color: #000;
+    }
+
+    /* CARD FIELDS */
+    .card-fields {
+        margin-top: 16px;
+        padding: 20px;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #f9f9f9, #ffffff);
+        box-shadow: inset 0 0 0 1px #e6e6e6;
+    }
+
+    .card-fields .row {
+        display: flex;
+        gap: 14px;
+    }
+
+    /* RIGHT SUMMARY */
+    .order-summary {
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 22px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 30px;
+    }
+
+    .order-summary h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    /* ITEMS */
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 15px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #ddd;
+    }
+
+    /* TOTAL */
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 24px 0;
+    }
+
+    /* BUTTON */
+    #placeOrderBtn {
+        width: 100%;
+        padding: 18px;
+        border-radius: 18px;
+        border: none;
+        background: linear-gradient(135deg, #000, #333);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.35s ease;
+    }
+
+    #placeOrderBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===================== */
+    /* MOBILE OPTIMIZATION */
+    /* ===================== */
+
+    @media (max-width: 900px) {
+        .checkout-wrapper {
+            grid-template-columns: 1fr;
+            gap: 28px;
+            padding: 40px 6%;
+        }
+
+        .order-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .checkout-form,
+        .order-summary {
+            padding: 24px;
+            border-radius: 18px;
+        }
+
+        .checkout-form h2 {
+            font-size: 24px;
+        }
+
+        .form-block h3 {
+            font-size: 16px;
+        }
+
+        .checkout-form input {
+            padding: 14px;
+            font-size: 14px;
+        }
+
+        .card-fields .row {
+            flex-direction: column;
+        }
+
+        #placeOrderBtn {
+            padding: 16px;
+            font-size: 15px;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-group">
+                <div class="logo-box">
+                    <img src="stylish-boot-house.jpeg" alt="S" />
+                </div>
+                <div class="brand-container">
+                    <h1 class="stylish-text"><span>Stylish</span></h1>
+                    <h2 class="boot-house-text">Boot House</h2>
+                    <br>
+                    <h4 class="since">Since 1990</h4>
+                </div>
+            </div>
+
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-item">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="nav-item">
+                        Womens <span class="arrow">▾</span>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="ladies-sandals.html">Sandals</a></li>
+                        <li><a href="ladies-heels.html">Heels</a></li>
+                        <li><a href="ladies-slippers.html">Slippers</a></li>
+                        <li><a href="ladies-super-softs.html">Super Softs</a></li>
+                    </ul>
+                </li>
+                <a href="#" class="nav-item">
+                    Kids <span class="arrow">▾</span>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="kids-all.html">All</a></li>
+                </ul>
+                </li>
+                <li><a href="sales.html" class="nav-item">Sale</a></li>
+                <li><a href="contact.html" class="nav-item">Contact</a></li>
+                <li class="dropdown location-dropdown">
+                    <a href="#" class="nav-item">
+                        Location <span class="arrow">▾</span>
+                    </a>
+                    <div class="dropdown-map">
+                        <!-- Map placeholder -->
+                        <iframe src="https://maps.app.goo.gl/rhrDmjwwhEvE5tot5" width="300" height="200"
+                            style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </li>
+                <div class="search-wrap">
+                    <button class="search-btn" aria-label="Search">
+                        🔍<span style="color: red;">Search</span>
+                    </button>
+                    <input type="text" class="search-input" placeholder="Search boots...">
+                </div>
+                <div class="nav-cart" id="cartBtn">🛒</div>
+            </ul>
+
+        </div>
+    </nav>
+
+    <section class="checkout-wrapper">
+
+        <!-- LEFT SIDE -->
+        <div class="checkout-form">
+
+            <h2>Checkout</h2>
+
+            <!-- CONTACT -->
+            <div class="form-block">
+                <h3>Contact</h3>
+                <input type="email" id="email" placeholder="Email address" required>
+            </div>
+
+            <!-- SHIPPING -->
+            <div class="form-block">
+                <h3>Shipping Address</h3>
+
+                <input type="text" id="name" placeholder="Full name" required>
+                <input type="text" id="address" placeholder="Address" required>
+                <input type="text" id="apartment" placeholder="Apartment (optional)">
+            </div>
+
+            <!-- PAYMENT -->
+            <div class="form-block">
+                <h3>Payment</h3>
+
+                <!-- <label class="pay-option">
+                    <input type="radio" name="payment" value="card" checked>
+                    Credit / Debit Card
+                </label> -->
+
+                <label class="pay-option">
+                    <input type="radio" name="payment" value="cod">
+                    Cash on Delivery
+                </label>
+
+                <!-- CARD DETAILS -->
+                <!-- <div class="card-fields" id="cardFields">
+                    <input type="text" placeholder="Card Holder Name">
+                    <input type="text" placeholder="Transaction ID" maxlength="50">
+                    <div class="row"> -->
+            </div>
+        </div>
+
+        </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="order-summary">
+
+            <h3>Your Order</h3>
+
+            <div id="orderItems"></div>
+
+            <div class="summary-total">
+                <span>Total</span>
+                <strong id="orderTotal">Rs 0</strong>
+            </div>
+
+            <button id="placeOrderBtn">Place Order</button>
+
+        </div>
+
+    </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const cart = JSON.parse(sessionStorage.getItem("checkout")) ||
+                JSON.parse(localStorage.getItem("cart")) || [];
+
+            const orderItems = document.getElementById("orderItems");
+            const orderTotal = document.getElementById("orderTotal");
+            const cardFields = document.getElementById("cardFields");
+
+            let total = 0;
+            orderItems.innerHTML = "";
+
+            if (cart.length === 0) {
+                orderItems.innerHTML = "<p>No product selected</p>";
+                orderTotal.innerText = "Rs 0";
+                return;
+            }
+
+            // Show cart summary
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+
+                orderItems.innerHTML += `
+            <div class="order-item">
+                <strong>${item.name}</strong><br>
+                Color: ${item.color || "—"} | Size: ${item.size || "—"} | Qty: ${item.qty}<br>
+                Rs ${itemTotal}
+            </div>
+        `;
+            });
+
+            orderTotal.innerText = "Rs " + total;
+
+            // Place order
+            document.getElementById("placeOrderBtn").addEventListener("click", async () => {
+                const email = document.getElementById("email").value.trim();
+                const name = document.getElementById("name").value.trim();
+                const address = document.getElementById("address").value.trim();
+                const apartment = document.getElementById("apartment").value.trim();
+
+                if (!email || !name || !address) {
+                    alert("Please fill all required fields");
+                    return;
+                }
+
+                const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || "cod";
+
+                let transactionId = "";
+                if (paymentMethod === "card") {
+                    transactionId = document.querySelector("#cardFields input[placeholder='Transaction ID']")?.value || "";
+                    if (!transactionId) {
+                        alert("Please enter Transaction ID");
+                        return;
+                    }
+                }
+
+                const orderData = {
+                    customer: { name, email, address, apartment },
+                    items: cart.map(item => ({
+                        name: item.name,
+                        price: item.price,
+                        qty: item.qty,
+                        size: item.size || "",
+                        color: item.color || ""
+                    })),
+                    total,
+                    payment: {
+                        method: paymentMethod === "card" ? "Online Transfer" : "Cash on Delivery",
+                        transactionId: transactionId || null
+                    },
+                    orderDate: new Date().toISOString()
+                };
+
+                try {
+                    const res = await fetch("/order", {  // <-- localhost:3000 hata diya
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    const data = await res.json();
+
+                    if (data.success) {
+                        alert("Order placed successfully!");
+                        localStorage.removeItem("cart");
+                        sessionStorage.removeItem("checkout");
+                        window.location.href = "index.html"; // redirect
+                    } else {
+                        alert("Order failed! " + (data.message || ""));
+                    }
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Server error. Make sure Node.js server is running.");
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>
