@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI)
         console.log("MongoDB connection error:", error);
     });
 
-// 🛑 YE HISSA ZAROORI HAI (Schema Define Karna)
+
 const orderSchema = new mongoose.Schema({
     customer: {
         name: String,
@@ -39,19 +39,16 @@ const orderSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-// Model create karna
 const Order = mongoose.model("Order", orderSchema);
 
 // ======================
-// MIDDLEWARE (YE DO LINES ZAROORI HAIN!)
+// MIDDLEWARE
 // ======================
 app.use(cors()); // Doosre domains/ports se request allow karne ke liye
 app.use(express.json()); // Frontend se aane wale JSON data ko parhne ke liye
 app.use(express.static(path.join(__dirname))); // Static files (HTML, CSS, JS) serve karne ke liye
 
-// 1. Purana setupTransporter() wala hissa yahan se hata dein
 
-// 2. Naya "FINAL SMTP SETUP" yahan paste karein:
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -65,7 +62,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// ✅ Ye check karna zaroori hai (Pata chalega ke password sahi hai ya nahi)
 transporter.verify(function (error, success) {
     if (error) {
         console.log("❌ SMTP Connection Error (App Password check karein):", error.message);
@@ -103,7 +99,7 @@ app.get("/test-email", (req, res) => {
 });
 
 // ==========================================
-// 🚀 UPDATED ORDER ROUTE (Sahi Backticks ke sath)
+// 🚀 UPDATED ORDER ROUTE
 // ==========================================
 app.post("/order", async (req, res) => {
     console.log("1. 📥 Order Request Aayi Hai!"); // Check 1
@@ -112,17 +108,17 @@ app.post("/order", async (req, res) => {
         const orderData = req.body;
         console.log("2. 📦 Data Received:", orderData.customer.name); // Check 2
 
-        // Database mein save (Mongoose)
+  
         const newOrder = new Order(orderData);
         await newOrder.save();
         console.log("3. ✅ Database: Order Saved"); // Check 3
 
-        // 🛍️ Items ki list banane ke liye
+        
         const itemsDetail = orderData.items.map(item =>
             `- ${item.name} | Qty: ${item.qty} | Color: ${item.color} | Rs ${item.price}`
         ).join('\n');
 
-        // 📧 Email Details (Updated Version)
+    
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: process.env.EMAIL_USER,
@@ -146,7 +142,7 @@ Check the dashboard or contact the customer!`
 
         console.log("4. 📧 Nodemailer: Email preparing..."); // Check 4
 
-        // 🚀 YE LINE SABSE ZAROORI HAI (Await ke sath)
+        // 
         const info = await transporter.sendMail(mailOptions);
 
         console.log("5. ✅ SUCCESS: Email Sent! ID:", info.messageId); // Check 5
