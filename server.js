@@ -119,7 +119,7 @@ app.post("/order", async (req, res) => {
 
         // 🛍️ Items ki list banane ke liye
         const itemsDetail = orderData.items.map(item =>
-            `- ${item.name} | Qty: ${item.qty} | Rs ${item.price}`
+            `- ${item.name} | Qty: ${item.qty} | Color: ${item.color} | Rs ${item.price}`
         ).join('\n');
 
         // 📧 Email Details (Updated Version)
@@ -131,10 +131,10 @@ app.post("/order", async (req, res) => {
             text: `New Order on Stylish Boot House!
 
 Naam: ${orderData.customer.name}
-Phone: ${orderData.customer.phone || 'N/A'}
 Email: ${orderData.customer.email || 'N/A'}
 Address: ${orderData.customer.address}
 Apartment: ${orderData.customer.apartment || 'N/A'}
+Phone: ${orderData.customer.phone || 'N/A'}
 
 ${itemsDetail}
 
