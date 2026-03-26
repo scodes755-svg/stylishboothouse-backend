@@ -49,63 +49,28 @@ app.use(cors()); // Doosre domains/ports se request allow karne ke liye
 app.use(express.json()); // Frontend se aane wale JSON data ko parhne ke liye
 app.use(express.static(path.join(__dirname))); // Static files (HTML, CSS, JS) serve karne ke liye
 
-// 1. Email Transporter Setup (Test account for debugging)
-let transporter;
-async function setupTransporter() {
-    // For testing, use Ethereal
-    let testAccount = await nodemailer.createTestAccount();
-    transporter = nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-            user: testAccount.user,
-            pass: testAccount.pass
-        }
-    });
-    console.log("Test email account:", testAccount.user);
-    console.log("Test email URL:", nodemailer.getTestMessageUrl(testAccount));
-}
-setupTransporter();
+// 1. Purana setupTransporter() wala hissa yahan se hata dein
 
-// ==========================================
-// 🚀 UPDATED ORDER ROUTE (Sahi Backticks ke sath)
-// ==========================================
-app.post("/order", async (req, res) => {
-    try {
-        const orderData = req.body;
+// 2. Naya "FINAL SMTP SETUP" yahan paste karein:
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
 
-        // 1. Database mein save karein
-        const newOrder = new Order(orderData);
-        const savedOrder = await newOrder.save();
-        const orderId = savedOrder._id.toString().slice(-6).toUpperCase();
-
-        console.log(`📦 Order saved in DB! ID: ${orderId}`);
-
-        // 2. Email Body
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER, // Apne aap ko email bhejna (Admin ke liye)
-            replyTo: orderData.customer.email,
-            subject: `🔥 NAYA ORDER: ${orderId} - ${orderData.customer.name}`,
-            text: `Order ID: ${orderId}\n\nCustomer Details:\nName: ${orderData.customer.name}\nEmail: ${orderData.customer.email}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\nApartment: ${orderData.customer.apartment}\n\nTotal: Rs ${orderData.total}\nPayment Method: ${orderData.payment.method}\nTransaction ID: ${orderData.payment.transactionId}\n\nOrder Placed At: ${savedOrder.createdAt}`
-        };
-
-        // 3. Email bhejne ka code (Fire and forget, taake block na ho)
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log("📧 ❌ EMAIL FAILED:", error.message);
-            } else {
-                console.log("📧 ✅ EMAIL SENT:", info.response);
-                console.log("Test email URL:", nodemailer.getTestMessageUrl(info));
-            }
-        });
-
-        res.json({ success: true, message: "Order Received!" });
-
-    } catch (error) {
-        console.error("❌ SERVER ERROR:", error);
-        res.status(500).json({ success: false, message: error.message });
+// ✅ Ye check karna zaroori hai (Pata chalega ke password sahi hai ya nahi)
+transporter.verify(function (error, success) {
+    if (error) {
+        console.log("❌ SMTP Connection Error (App Password check karein):", error.message);
+    } else {
+        console.log("🚀 SMTP Server Connect Ho Gaya! Email ab jayegi.");
     }
 });
 
@@ -135,4 +100,61 @@ app.get("/test-email", (req, res) => {
             res.send("Email sent successfully!");
         }
     });
+});
+
+// ==========================================
+// 🚀 UPDATED ORDER ROUTE (Sahi Backticks ke sath)
+// ==========================================
+app.post("/order", async (req, res) => {
+    console.log("1. 📥 Order Request Aayi Hai!"); // Check 1
+
+    try {
+        const orderData = req.body;
+        console.log("2. 📦 Data Received:", orderData.customer.name); // Check 2
+
+        // Database mein save (Mongoose)
+        const newOrder = new Order(orderData);
+        await newOrder.save();
+        console.log("3. ✅ Database: Order Saved"); // Check 3
+
+        // 🛍️ Items ki list banane ke liye
+        const itemsDetail = orderData.items.map(item =>
+            `- ${item.name} | Qty: ${item.qty} | Rs ${item.price}`
+        ).join('\n');
+
+        // 📧 Email Details (Updated Version)
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER,
+            replyTo: orderData.customer.email,
+            subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
+            text: `New Order on Stylish Boot House!
+
+Naam: ${orderData.customer.name}
+Phone: ${orderData.customer.phone || 'N/A'}
+Email: ${orderData.customer.email || 'N/A'}
+Address: ${orderData.customer.address}
+Apartment: ${orderData.customer.apartment || 'N/A'}
+
+${itemsDetail}
+
+💰 TOTAL: Rs ${orderData.total}
+💳 PAYMENT: ${orderData.payment ? orderData.payment.method : 'N/A'}
+
+Check the dashboard or contact the customer!`
+        };
+
+        console.log("4. 📧 Nodemailer: Email preparing..."); // Check 4
+
+        // 🚀 YE LINE SABSE ZAROORI HAI (Await ke sath)
+        const info = await transporter.sendMail(mailOptions);
+
+        console.log("5. ✅ SUCCESS: Email Sent! ID:", info.messageId); // Check 5
+
+        res.json({ success: true, message: "Order Received & Email Sent!" });
+
+    } catch (error) {
+        console.log("❌ ERROR:", error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
 });
