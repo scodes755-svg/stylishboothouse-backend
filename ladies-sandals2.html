@@ -1178,7 +1178,85 @@
             </div>
         </a>
     </section>
+
+    <!-- CART PANEL -->
+    <div id="cartOverlay"></div>
+
+    <div id="cartPanel">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <span id="closeCart">&times;</span>
+        </div>
+
+        <div class="cart-content">
+            <p>No items yet</p>
+        </div>
+        <!-- CART FOOTER: TOTAL + CHECKOUT BUTTON -->
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: <strong id="cartTotal">Rs 0</strong>
+            </div>
+            <a href="payment.html" class="checkout-btn">Checkout</a>
+        </div>
+    </div>
+
     <script>
+        /*** CART PANEL FUNCTIONS ***/
+        function openCartPanel() {
+            const cartPanel = document.getElementById("cartPanel");
+            const cartOverlay = document.getElementById("cartOverlay");
+            if (cartPanel) cartPanel.classList.add("active");
+            if (cartOverlay) cartOverlay.classList.add("active");
+        }
+
+        function updateCartPanelUI() {
+            const cartContent = document.querySelector(".cart-content");
+            const cartTotal = document.getElementById("cartTotal");
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            
+            if (!cartContent) return;
+            
+            cartContent.innerHTML = "";
+            let total = 0;
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                cartContent.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.image}">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p>Color: ${item.color} | Size: ${item.size} | Qty: ${item.qty}</p>
+                            <p><strong>Rs ${item.price * item.qty}</strong></p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (cartTotal) cartTotal.innerText = "Rs " + total;
+        }
+
+        // Init cart on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            updateCartPanelUI();
+            const closeCart = document.getElementById("closeCart");
+            const cartOverlay = document.getElementById("cartOverlay");
+            if (closeCart) {
+                closeCart.onclick = () => {
+                    const cartPanel = document.getElementById("cartPanel");
+                    if (cartPanel) cartPanel.classList.remove("active");
+                    if (cartOverlay) cartOverlay.classList.remove("active");
+                };
+            }
+            if (cartOverlay) {
+                cartOverlay.onclick = () => {
+                    const cartPanel = document.getElementById("cartPanel");
+                    if (cartPanel) cartPanel.classList.remove("active");
+                    if (cartOverlay) cartOverlay.classList.remove("active");
+                };
+            }
+        });
+
         const messages = [
             "🚚 Free Delivery All Over Pakistan",
             "⚡ Cash on Delivery Available Nationwide"
@@ -1320,6 +1398,10 @@
             cart.push(cartItem);
             localStorage.setItem("cart", JSON.stringify(cart));
 
+            // Update cart UI and open the panel
+            updateCartPanelUI();
+            openCartPanel();
+            
             alert("Product added to cart");
         });
 
