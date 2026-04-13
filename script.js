@@ -1,583 +1,299 @@
+// ==========================
+// 1. MOBILE MENU & NAVIGATION
+// ==========================
 const menu = document.querySelector('#mobile-menu');
-const navLinks = document.querySelector('#nav-list');
+const navLinksContainer = document.querySelector('.nav-links'); // Variable name fixed
 
-menu.addEventListener('click', () => {
-    navlinks.classList.toggle('active');
-
-    // Hamburger icon ko "X" banane ke liye animation (Optional)
-    menu.classList.toggle('is-active');
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // --------------------------
-    // MOBILE MENU
-    // --------------------------
-    const mobileMenuBtn = document.getElementById("mobile-menu");
-    const navLinks = document.querySelector(".nav-links");
-
-    mobileMenuBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
-        mobileMenuBtn.classList.toggle("is-active"); // hamburger X animation
+if (menu && navLinksContainer) {
+    menu.addEventListener('click', () => {
+        navLinksContainer.classList.toggle('active');
+        menu.classList.toggle('is-active');
     });
 
     document.querySelectorAll(".nav-item").forEach(item => {
         item.addEventListener("click", () => {
-            navLinks.classList.remove("active");
-            mobileMenuBtn.classList.remove("is-active");
+            navLinksContainer.classList.remove("active");
+            menu.classList.remove("is-active");
         });
     });
+}
 
-    // --------------------------
-    // CART PANEL
-    // --------------------------
-    const cartBtn = document.getElementById("cartBtn"); // 🛒 icon
-    const cartPanel = document.getElementById("cartPanel");
-    const cartOverlay = document.getElementById("cartOverlay");
-    const closeCart = document.getElementById("closeCart");
-    const cartItems = document.getElementById("cartItems");
-    const cartTotal = document.getElementById("cartTotal");
-    const checkoutBtn = document.getElementById("checkoutBtn");
-
-    let total = 0;
-
-    // Open cart
-    cartBtn.addEventListener("click", () => {
-        cartPanel.classList.add("active");
-        cartOverlay.classList.add("active");
-
-        // Close mobile menu if open
-        navLinks.classList.remove("active");
-        mobileMenuBtn.classList.remove("is-active");
-    });
-
-    // Close cart
-    function closeCartPanel() {
-        cartPanel.classList.remove("active");
-        cartOverlay.classList.remove("active");
-    }
-
-    closeCart.addEventListener("click", closeCartPanel);
-    cartOverlay.addEventListener("click", closeCartPanel);
-
-    // Add item to cart function
-    window.addToCart = function (name, price, image, color, size, qty = 1) {
-        const item = document.createElement("div");
-        item.className = "cart-item";
-
-        item.innerHTML = `
-            <img src="${image}" alt="${name}">
-            <div>
-                <h4>${name}</h4>
-                <p>Color: ${color} | Size: ${size} | Qty: ${qty}</p>
-                <span>Rs ${price * qty}</span>
-            </div>
-        `;
-
-        cartItems.appendChild(item);
-        total += price * qty;
-        cartTotal.textContent = `Rs ${total}`;
-    }
-
-    // Checkout button
-    checkoutBtn.addEventListener("click", () => {
-        if (cartItems.children.length === 0) {
-            alert("Cart is empty!");
-            return;
-        }
-        window.location.href = "checkout.html";
-    });
-
-});
-
-// Mobile toggle for location map
+// Location Dropdown Logic
 document.addEventListener("DOMContentLoaded", () => {
     const locationDropdown = document.querySelector(".location-dropdown > .nav-item");
     const dropdownMap = document.querySelector(".location-dropdown .dropdown-map");
 
-    locationDropdown.addEventListener("click", (e) => {
-        e.preventDefault();
-        dropdownMap.style.display = dropdownMap.style.display === "block" ? "none" : "block";
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // -------------------------
-    // MOBILE MENU TOGGLE
-    // -------------------------
-    const mobileMenuBtn = document.getElementById("mobile-menu");
-    const navLinks = document.querySelector(".nav-links");
-
-    mobileMenuBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("active");  // show/hide mobile links
-        mobileMenuBtn.classList.toggle("is-active"); // hamburger X animation
-    });
-
-    document.querySelectorAll(".nav-item").forEach(item => {
-        item.addEventListener("click", () => {
-            navLinks.classList.remove("active");
-            mobileMenuBtn.classList.remove("is-active");
+    if (locationDropdown && dropdownMap) {
+        locationDropdown.addEventListener("click", (e) => {
+            e.preventDefault();
+            dropdownMap.style.display = dropdownMap.style.display === "block" ? "none" : "block";
         });
-    });
+    }
 });
 
+// ==========================
+// 2. SEARCH FUNCTIONALITY
+// ==========================
 document.addEventListener("DOMContentLoaded", () => {
-
-    // 1️⃣ Elements
     const searchInput = document.querySelector(".search-input");
     const searchBtn = document.querySelector(".search-btn");
+    const searchWrap = document.querySelector(".search-wrap");
 
-    // 2️⃣ Function to redirect to search page
     function goToSearchPage() {
         const query = searchInput.value.trim();
         if (query !== "") {
-            // Redirect to search.html with query as URL parameter
             window.location.href = `search.html?q=${encodeURIComponent(query)}`;
         }
     }
 
-    // 3️⃣ Search button click
-    searchBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        goToSearchPage();
-    });
-
-    // 4️⃣ Enter key press in input
-    searchInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            goToSearchPage();
-        }
-    });
-
-    // 5️⃣ Optional: toggle search input for small screens
-    const searchWrap = document.querySelector(".search-wrap");
-    searchBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        searchWrap.classList.toggle("active");
-        if (searchWrap.classList.contains("active")) {
-            setTimeout(() => searchInput.focus(), 300);
-        }
-    });
-
-    // Close on outside click
-    document.addEventListener("click", (e) => {
-        if (!searchWrap.contains(e.target)) {
-            searchWrap.classList.remove("active");
-        }
-    });
-
-    // Close on ESC
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            searchWrap.classList.remove("active");
-        }
-    });
-
-});
-
-const messages = [
-    "🚚 Free Delivery All Over Pakistan",
-    "⚡ Cash on Delivery Available Nationwide"
-];
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // --------------------------
-    // MOBILE MENU
-    // --------------------------
-    const mobileMenuBtn = document.getElementById("mobile-menu"); // 3-line hamburger
-    const navLinks = document.querySelector(".nav-links"); // ul nav items
-
-    mobileMenuBtn.addEventListener("click", () => {
-        navLinks.classList.toggle("active"); // show/hide links
-        mobileMenuBtn.classList.toggle("is-active"); // animate hamburger → X
-    });
-
-    // Close mobile menu on nav item click
-    document.querySelectorAll(".nav-item").forEach(item => {
-        item.addEventListener("click", () => {
-            navLinks.classList.remove("active");
-            mobileMenuBtn.classList.remove("is-active");
+            if (searchWrap.classList.contains("active") && searchInput.value !== "") {
+                goToSearchPage();
+            } else {
+                searchWrap.classList.toggle("active");
+                if (searchWrap.classList.contains("active")) {
+                    setTimeout(() => searchInput.focus(), 300);
+                }
+            }
         });
-    });
 
-});
+        searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                goToSearchPage();
+            }
+        });
+    }
 
-document.querySelectorAll(".dropdown > a").forEach(item => {
-    item.addEventListener("click", e => {
-        e.preventDefault();
-        item.parentElement.classList.toggle("active");
-    });
-});
-
-let index = 0;
-const infoText = document.getElementById("infoText");
-
-setInterval(() => {
-    infoText.style.opacity = "0";
-    infoText.style.transform = "translateY(10px)";
-
-    setTimeout(() => {
-        index = (index + 1) % messages.length;
-        infoText.textContent = messages[index];
-        infoText.style.opacity = "1";
-        infoText.style.transform = "translateY(0)";
-    }, 400);
-
-}, 3000);
-
-// HERO SLIDER SCRIPT
-const slides = document.querySelectorAll('.hero-slide');
-let current = 0;
-
-setInterval(() => {
-    slides[current].classList.remove('active');
-    slides[current].classList.add('prev');
-
-    current = (current + 1) % slides.length;
-
-    slides[current].classList.add('active');
-
-    slides.forEach((slide, index) => {
-        if (index !== current) {
-            slide.classList.remove('prev');
+    // Close search on outside click or ESC
+    document.addEventListener("click", (e) => {
+        if (searchWrap && !searchWrap.contains(e.target)) {
+            searchWrap.classList.remove("active");
         }
     });
 
-}, 4000);
-
-// CATEGORY TOGGLE SCRIPT
-document.querySelectorAll('[data-toggle]').forEach(card => {
-    card.addEventListener('click', () => {
-
-        // next element is the sub-category grid
-        const subGrid = card.nextElementSibling;
-
-        // toggle only this category
-        subGrid.classList.toggle('active');
-
-    });
-});
-
-// Why Choose Animations
-const boxes = document.querySelectorAll('.why-box');
-
-const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-        if (e.isIntersecting) {
-            e.target.style.opacity = 1;
-            e.target.style.transform = 'translateY(0)';
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && searchWrap) {
+            searchWrap.classList.remove("active");
         }
     });
-}, { threshold: 0.25 });
-
-boxes.forEach(box => {
-    box.style.opacity = 0;
-    box.style.transform = 'translateY(25px)';
-    obs.observe(box);
 });
 
-const cartBtn = document.getElementById("cartBtn"); // navbar cart button
+// ==========================
+// 3. CART SYSTEM (LocalStorage)
+// ==========================
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const cartBtn = document.getElementById("cartBtn");
 const cartPanel = document.getElementById("cartPanel");
 const cartOverlay = document.getElementById("cartOverlay");
 const closeCart = document.getElementById("closeCart");
-const cartItems = document.getElementById("cartItems");
+const cartContent = document.querySelector(".cart-content");
 const cartTotal = document.getElementById("cartTotal");
 
-let total = 0;
-
-/* OPEN CART */
-cartBtn.addEventListener("click", () => {
-    cartPanel.classList.add("active");
-    cartOverlay.classList.add("active");
-});
-
-/* CLOSE CART */
-closeCart.addEventListener("click", closeCartPanel);
-cartOverlay.addEventListener("click", closeCartPanel);
+function openCart() {
+    if (cartPanel && cartOverlay) {
+        cartPanel.classList.add("active");
+        cartOverlay.classList.add("active");
+    }
+}
 
 function closeCartPanel() {
-    cartPanel.classList.remove("active");
-    cartOverlay.classList.remove("active");
+    if (cartPanel && cartOverlay) {
+        cartPanel.classList.remove("active");
+        cartOverlay.classList.remove("active");
+    }
 }
 
-/* ADD TO CART FUNCTION */
-function addToCart(name, price, image) {
-    const item = document.createElement("div");
-    item.className = "cart-item";
+if (cartBtn) cartBtn.onclick = openCart;
+if (closeCart) closeCart.onclick = closeCartPanel;
+if (cartOverlay) cartOverlay.onclick = closeCartPanel;
 
-    item.innerHTML = `
-    <img src="${image}">
-    <div>
-      <h4>${name}</h4>
-      <span>Rs ${price}</span>
-    </div>
-  `;
+// Global Add to Cart
+window.addToCart = function (name, price, image, color = "Standard", size = "N/A", qty = 1) {
+    const product = {
+        id: name.replace(/\s+/g, '-').toLowerCase(), // Unique ID generation
+        name,
+        price: parseInt(price),
+        image,
+        color,
+        size,
+        qty: parseInt(qty)
+    };
 
-    cartItems.appendChild(item);
-    total += price;
-    cartTotal.textContent = `Rs ${total}`;
-}
+    const existing = cart.find(item => item.name === product.name);
+    if (existing) {
+        existing.qty += 1;
+    } else {
+        cart.push(product);
+    }
 
-// CART FUNCTIONALITY
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-document.querySelectorAll(".add-cart-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-
-        const product = {
-            id: btn.dataset.id,
-            name: btn.dataset.name,
-            price: parseInt(btn.dataset.price),
-            image: btn.dataset.image,
-            qty: 1
-        };
-
-        const existing = cart.find(item => item.id === product.id);
-
-        if (existing) {
-            existing.qty += 1;
-        } else {
-            cart.push(product);
-        }
-
-        localStorage.setItem("cart", JSON.stringify(cart));
-
-        openCart();
-        updateCartUI();
-    });
-});
-
-function updateCartUI() {
-    const cartContent = document.querySelector(".cart-content");
-    const totalBox = document.getElementById("cartTotal");
-
-    cartContent.innerHTML = "";
-    let total = 0;
-
-    cart.forEach(item => {
-        total += item.price * item.qty;
-
-        cartContent.innerHTML += `
-            <div class="cart-item">
-                <img src="${item.image}">
-                <div>
-                    <h4>${item.name}</h4>
-                    <p>Rs ${item.price} × ${item.qty}</p>
-                </div>
-            </div>
-        `;
-    });
-
-    totalBox.innerText = "Rs " + total;
-}
-
-function openCart() {
-    document.getElementById("cartOverlay").classList.add("active");
-    document.getElementById("cartPanel").classList.add("active");
-}
-
-document.getElementById("closeCart").onclick = () => {
-    document.getElementById("cartOverlay").classList.remove("active");
-    document.getElementById("cartPanel").classList.remove("active");
-}
-
-document.getElementById("cartBtn").onclick = openCart;
-
-updateCartUI();
-
-function removeFromCart(index) {
-    // 1. Cart array se item remove karo
-    cart.splice(index, 1);
-
-    // 2. LocalStorage update karo
     localStorage.setItem("cart", JSON.stringify(cart));
-
-    // 3. Cart UI refresh karo
     updateCartUI();
-}
+    openCart();
+};
+
+window.removeFromCart = function (index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartUI();
+};
 
 function updateCartUI() {
-    const cartContent = document.querySelector(".cart-content");
-    const totalBox = document.getElementById("cartTotal");
+    if (!cartContent || !cartTotal) return;
 
     cartContent.innerHTML = "";
     let total = 0;
 
     if (cart.length === 0) {
-        cartContent.innerHTML = "<p>No items yet</p>";
-        totalBox.innerText = "Rs 0";
+        cartContent.innerHTML = "<p style='text-align:center; padding:20px;'>No items yet</p>";
+        cartTotal.innerText = "Rs 0";
         return;
     }
 
     cart.forEach((item, index) => {
         total += item.price * item.qty;
-
         cartContent.innerHTML += `
-        <div class="cart-item">
-            <img src="${item.image}">
-            <div class="cart-item-info">
-                <h4>${item.name}</h4>
-                <p>Size: ${item.size || "—"}</p>
-                <p>Color: ${item.color || "—"}</p>
-                <p>Rs ${item.price} × ${item.qty}</p>
+            <div class="cart-item">
+                <img src="${item.image}" onerror="this.src='https://via.placeholder.com/50'">
+                <div class="cart-item-info">
+                    <h4>${item.name}</h4>
+                    <p>Size: ${item.size || "—"} | Color: ${item.color || "—"}</p>
+                    <p>Rs ${item.price} × ${item.qty}</p>
+                </div>
+                <button class="remove-item" onclick="removeFromCart(${index})">✖</button>
             </div>
-            <button class="remove-item" onclick="removeFromCart(${index})">✖</button>
-        </div>
-    `;
+        `;
     });
+    cartTotal.innerText = "Rs " + total;
 }
 
-// Jab user "Place Order" button dabaye
+// Initial UI load
+updateCartUI();
+
+// ==========================
+// 4. ORDER & API CALLS (Fixed for Live Site)
+// ==========================
+
+// Place Order Function
 async function placeOrder(orderData) {
     try {
         console.log("Sending order to server...");
-
-        const response = await fetch("http://localhost:3000/order", {
+        // FIXED: Localhost removed for Live Support
+        const response = await fetch("/order", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderData)
         });
 
         const result = await response.json();
 
         if (result.success) {
-            alert("Mubarak ho! Order place ho gaya aur email bhej di gayi.");
-            // Yahan aap cart clear kar sakte hain ya redirect
+            alert("Mubarak ho! Order place ho gaya hai.");
+            cart = [];
+            localStorage.setItem("cart", JSON.stringify(cart));
+            window.location.href = "success.html";
         } else {
             alert("Masla aaya: " + result.message);
         }
-
     } catch (error) {
         console.error("Error sending order:", error);
-        alert("Server se connect nahi ho pa raha!");
+        alert("Server se connect nahi ho pa raha! Make sure backend is live.");
     }
 }
 
-async function loadMainShop() {
-    // 1. Database se products mangwao
-    const res = await fetch('/api/get-all-products');
-    const products = await res.json();
-
-    // 2. Wo jagah dhoondo jahan products dikhane hain
-    const shopContainer = document.getElementById('products-row');
-
-    // Agar database mein products hain, tabhi purane products hatao
-    if (products.length > 0) {
-        shopContainer.innerHTML = ""; // Purana static data saaf
-
-        products.forEach(p => {
-            shopContainer.innerHTML += `
-                <div class="col-md-4 mb-4">
-                    <div class="product-card shadow-sm">
-                        <img src="${p.image}" class="img-fluid" alt="${p.title}">
-                        <h4 class="mt-2">${p.title}</h4>
-                        <p class="text-danger">Rs. ${p.price}</p>
-                        <button class="btn btn-dark" onclick="orderNow('${p.title}', '${p.price}')">Order Now</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-}
-
-// Page load hote hi function chala do
-window.onload = loadMainShop;
-
-async function orderNow(productName, price) {
-    const customerName = prompt("Apna Naam Likhein:");
-    const phone = prompt("Apna WhatsApp Number Likhein:");
-    const address = prompt("Apna Mukammal Address Likhein:");
-
-    if (customerName && phone) {
-        const orderData = { customerName, productName, price, phone, address };
-
-        await fetch('/api/place-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        });
-
-        alert("Shukriya! Aapka order mil gaya hai. Hum jald raabta karenge.");
-    }
-}
-
+// Load Home Featured Products
 async function loadHomeFeatured() {
     try {
         console.log("Fetching products for home...");
-        const res = await fetch('http://localhost:3000/api/get-all-products');
+        // FIXED: Localhost removed for Live Support
+        const res = await fetch('/api/get-all-products');
         const allProducts = await res.json();
 
-        // Naya maal sabse upar dikhane ke liye reverse
         allProducts.reverse();
 
-        // 1. LADIES FILTER: Check all ladies-related categories
+        // Filters
         const ladiesProducts = allProducts.filter(p => {
             const cat = p.category.toLowerCase();
             return cat === 'heels' || cat === 'sandals' || cat === 'slippers' || cat === 'super-softs' || cat === 'ladies';
         }).slice(0, 6);
 
-        // 2. KIDS FILTER
-        const kidsProducts = allProducts.filter(p =>
-            p.category.toLowerCase() === 'kids'
-        ).slice(0, 6);
+        const kidsProducts = allProducts.filter(p => p.category.toLowerCase() === 'kids').slice(0, 6);
 
-        // Containers dhundna
         const ladiesContainer = document.getElementById('ladies-featured');
         const kidsContainer = document.getElementById('kids-featured');
 
-        // Card Template (Aapka design)
         const createCard = (product) => `
-    <div class="featured-card" 
-         onclick="window.location.href='product-detail.html?id=${product._id}'"
-         style="background: #ffffff; border-radius: 20px; padding: 15px; margin: 10px; display: inline-block; width: 100%; max-width: 250px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;">
-        
-        <div style="position: relative; height: 180px; overflow: hidden; border-radius: 15px; background: #f0f0f0; margin-bottom: 10px;">
-            <img src="${product.image}" 
-                 onerror="this.src='https://via.placeholder.com/200x180?text=No+Image'" 
-                 style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
+            <div class="featured-card" 
+                 onclick="window.location.href='product-detail.html?id=${product._id}'"
+                 style="background: #ffffff; border-radius: 20px; padding: 15px; margin: 10px; display: inline-block; width: 100%; max-width: 250px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor:pointer;">
+                <div style="position: relative; height: 180px; overflow: hidden; border-radius: 15px; background: #f0f0f0; margin-bottom: 10px;">
+                    <img src="${product.image}" onerror="this.src='https://via.placeholder.com/200x180?text=No+Image'" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <h3 style="font-size: 1.1rem; margin: 10px 0; color: #333; font-weight: 600;">${product.title}</h3>
+                <div style="margin-bottom: 15px;">
+                    <span style="color: #888; text-decoration: line-through; font-size: 0.85rem;">Rs. ${Math.round(product.price * 1.2)}</span>
+                    <span style="color: #b02a37; font-weight: bold; margin-left: 10px; font-size: 1rem;">Rs. ${product.price}</span>
+                </div>
+                <button onclick="event.stopPropagation(); addToCart('${product.title}', ${product.price}, '${product.image}')" 
+                        style="width: 100%; padding: 12px; background: #b02a37; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+                    Add to Cart
+                </button>
+            </div>
+        `;
 
-        <h3 style="font-size: 1.1rem; margin: 10px 0; color: #333; font-weight: 600;">${product.title}</h3>
-        
-        <div style="margin-bottom: 15px;">
-            <span style="color: #888; text-decoration: line-through; font-size: 0.85rem;">Rs. ${Math.round(product.price * 1.2)}</span>
-            <span style="color: #b02a37; font-weight: bold; margin-left: 10px; font-size: 1rem;">Rs. ${product.price}</span>
-        </div>
-
-        <button onclick="event.stopPropagation(); addToCart('${product.title}', ${product.price}, 'images/${product.image}')" 
-                style="width: 100%; padding: 12px; background: #b02a37; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-            Add to Cart
-        </button>
-    </div>
-`;
-
-        // Ladies Section Update
         if (ladiesContainer) {
-            if (ladiesProducts.length > 0) {
-                ladiesContainer.innerHTML = ladiesProducts.map(p => createCard(p)).join('');
-            } else {
-                ladiesContainer.innerHTML = "<p class='text-white'>No Ladies Shoes Found</p>";
-            }
+            ladiesContainer.innerHTML = ladiesProducts.length > 0 ? ladiesProducts.map(p => createCard(p)).join('') : "<p class='text-white'>No Ladies Shoes Found</p>";
         }
-
-        // Kids Section Update
         if (kidsContainer) {
-            if (kidsProducts.length > 0) {
-                kidsContainer.innerHTML = kidsProducts.map(p => createCard(p)).join('');
-            } else {
-                kidsContainer.innerHTML = "<p class='text-white'>No Kids Shoes Found</p>";
-            }
+            kidsContainer.innerHTML = kidsProducts.length > 0 ? kidsProducts.map(p => createCard(p)).join('') : "<p class='text-white'>No Kids Shoes Found</p>";
         }
-
     } catch (err) {
         console.error("Data load nahi ho raha:", err);
     }
 }
 
-// Ensure it runs after DOM is ready
+// ==========================
+// 5. UI EFFECTS (Slides, Info bar)
+// ==========================
+const messages = ["🚚 Free Delivery All Over Pakistan", "⚡ Cash on Delivery Available Nationwide"];
+let msgIndex = 0;
+const infoText = document.getElementById("infoText");
+
+if (infoText) {
+    setInterval(() => {
+        infoText.style.opacity = "0";
+        setTimeout(() => {
+            msgIndex = (msgIndex + 1) % messages.length;
+            infoText.textContent = messages[msgIndex];
+            infoText.style.opacity = "1";
+        }, 400);
+    }, 3000);
+}
+
+// Hero Slider
+const slides = document.querySelectorAll('.hero-slide');
+let currentSlide = 0;
+
+if (slides.length > 0) {
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        slides[currentSlide].classList.add('prev');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        slides.forEach((slide, idx) => { if (idx !== currentSlide) slide.classList.remove('prev'); });
+    }, 4000);
+}
+
+// Category Toggle
+document.querySelectorAll('[data-toggle]').forEach(card => {
+    card.addEventListener('click', () => {
+        const subGrid = card.nextElementSibling;
+        if (subGrid) subGrid.classList.toggle('active');
+    });
+});
+
+// Run on Load
 document.addEventListener('DOMContentLoaded', loadHomeFeatured);
