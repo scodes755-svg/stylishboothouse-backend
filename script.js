@@ -429,3 +429,155 @@ function updateCartUI() {
     `;
     });
 }
+
+// Jab user "Place Order" button dabaye
+async function placeOrder(orderData) {
+    try {
+        console.log("Sending order to server...");
+
+        const response = await fetch("http://localhost:3000/order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(orderData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            alert("Mubarak ho! Order place ho gaya aur email bhej di gayi.");
+            // Yahan aap cart clear kar sakte hain ya redirect
+        } else {
+            alert("Masla aaya: " + result.message);
+        }
+
+    } catch (error) {
+        console.error("Error sending order:", error);
+        alert("Server se connect nahi ho pa raha!");
+    }
+}
+
+async function loadMainShop() {
+    // 1. Database se products mangwao
+    const res = await fetch('/api/get-all-products');
+    const products = await res.json();
+
+    // 2. Wo jagah dhoondo jahan products dikhane hain
+    const shopContainer = document.getElementById('products-row');
+
+    // Agar database mein products hain, tabhi purane products hatao
+    if (products.length > 0) {
+        shopContainer.innerHTML = ""; // Purana static data saaf
+
+        products.forEach(p => {
+            shopContainer.innerHTML += `
+                <div class="col-md-4 mb-4">
+                    <div class="product-card shadow-sm">
+                        <img src="${p.image}" class="img-fluid" alt="${p.title}">
+                        <h4 class="mt-2">${p.title}</h4>
+                        <p class="text-danger">Rs. ${p.price}</p>
+                        <button class="btn btn-dark" onclick="orderNow('${p.title}', '${p.price}')">Order Now</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+}
+
+// Page load hote hi function chala do
+window.onload = loadMainShop;
+
+async function orderNow(productName, price) {
+    const customerName = prompt("Apna Naam Likhein:");
+    const phone = prompt("Apna WhatsApp Number Likhein:");
+    const address = prompt("Apna Mukammal Address Likhein:");
+
+    if (customerName && phone) {
+        const orderData = { customerName, productName, price, phone, address };
+
+        await fetch('/api/place-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        });
+
+        alert("Shukriya! Aapka order mil gaya hai. Hum jald raabta karenge.");
+    }
+}
+
+async function loadHomeFeatured() {
+    try {
+        console.log("Fetching products for home...");
+        const res = await fetch('http://localhost:3000/api/get-all-products');
+        const allProducts = await res.json();
+
+        // Naya maal sabse upar dikhane ke liye reverse
+        allProducts.reverse();
+
+        // 1. LADIES FILTER: Check all ladies-related categories
+        const ladiesProducts = allProducts.filter(p => {
+            const cat = p.category.toLowerCase();
+            return cat === 'heels' || cat === 'sandals' || cat === 'slippers' || cat === 'super-softs' || cat === 'ladies';
+        }).slice(0, 6);
+
+        // 2. KIDS FILTER
+        const kidsProducts = allProducts.filter(p =>
+            p.category.toLowerCase() === 'kids'
+        ).slice(0, 6);
+
+        // Containers dhundna
+        const ladiesContainer = document.getElementById('ladies-featured');
+        const kidsContainer = document.getElementById('kids-featured');
+
+        // Card Template (Aapka design)
+        const createCard = (product) => `
+    <div class="featured-card" 
+         onclick="window.location.href='product-detail.html?id=${product._id}'"
+         style="background: #ffffff; border-radius: 20px; padding: 15px; margin: 10px; display: inline-block; width: 100%; max-width: 250px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s;">
+        
+        <div style="position: relative; height: 180px; overflow: hidden; border-radius: 15px; background: #f0f0f0; margin-bottom: 10px;">
+            <img src="${product.image}" 
+                 onerror="this.src='https://via.placeholder.com/200x180?text=No+Image'" 
+                 style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <h3 style="font-size: 1.1rem; margin: 10px 0; color: #333; font-weight: 600;">${product.title}</h3>
+        
+        <div style="margin-bottom: 15px;">
+            <span style="color: #888; text-decoration: line-through; font-size: 0.85rem;">Rs. ${Math.round(product.price * 1.2)}</span>
+            <span style="color: #b02a37; font-weight: bold; margin-left: 10px; font-size: 1rem;">Rs. ${product.price}</span>
+        </div>
+
+        <button onclick="event.stopPropagation(); addToCart('${product.title}', ${product.price}, 'images/${product.image}')" 
+                style="width: 100%; padding: 12px; background: #b02a37; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            Add to Cart
+        </button>
+    </div>
+`;
+
+        // Ladies Section Update
+        if (ladiesContainer) {
+            if (ladiesProducts.length > 0) {
+                ladiesContainer.innerHTML = ladiesProducts.map(p => createCard(p)).join('');
+            } else {
+                ladiesContainer.innerHTML = "<p class='text-white'>No Ladies Shoes Found</p>";
+            }
+        }
+
+        // Kids Section Update
+        if (kidsContainer) {
+            if (kidsProducts.length > 0) {
+                kidsContainer.innerHTML = kidsProducts.map(p => createCard(p)).join('');
+            } else {
+                kidsContainer.innerHTML = "<p class='text-white'>No Kids Shoes Found</p>";
+            }
+        }
+
+    } catch (err) {
+        console.error("Data load nahi ho raha:", err);
+    }
+}
+
+// Ensure it runs after DOM is ready
+document.addEventListener('DOMContentLoaded', loadHomeFeatured);
