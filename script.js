@@ -182,7 +182,9 @@ async function placeOrder(orderData) {
     try {
         console.log("Sending order to server...");
         // FIXED: Localhost removed for Live Support
-        const response = await fetch("/order", {
+        // Galti: const response = await fetch("/order", ...
+        // Sahi (Isko try karein):
+        const response = await fetch("https://stylishboothouse.store/order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderData)
@@ -209,7 +211,8 @@ async function loadHomeFeatured() {
     try {
         console.log("Fetching products for home...");
         // FIXED: Localhost removed for Live Support
-        const res = await fetch('/api/get-all-products');
+        // loadHomeFeatured mein bhi ye line update kar dein:
+        const res = await fetch('https://stylishboothouse.store/api/get-all-products');
         const allProducts = await res.json();
 
         allProducts.reverse();
