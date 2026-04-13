@@ -7,21 +7,45 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-console.log("DEBUG -> Email:", process.env.EMAIL_USER);
-console.log("DEBUG -> Pass:", process.env.EMAIL_PASS ? "Loaded" : "Not Loaded");
+// ======================
+// MIDDLEWARE
+// ======================
+app.use(cors());
+app.use(express.json());
+// Files serve karne ke liye (Static folders)
+app.use(express.static(path.join(__dirname)));
+app.use(express.static('public'));
+// Ye line Express ko batati hai ke 'images' folder ke andar ki files public hain
+app.use('/images', express.static('images'));
 
 // ======================
 // DATABASE CONNECTION
 // ======================
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log("MongoDB connected successfully");
-    })
-    .catch((error) => {
-        console.log("MongoDB connection error:", error);
-    });
+const startServer = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 10000,
+            connectTimeoutMS: 10000
+        });
+        console.log("🚀 MongoDB connected successfully");
 
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, () => {
+            console.log(`✅ Server is running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.log("❌ MongoDB connection error:", error);
+        process.exit(1);
+    }
+};
 
+startServer();
+
+// ======================
+// DATABASE MODELS (Schemas)
+// ======================
+
+// 1. Order Model
 const orderSchema = new mongoose.Schema({
     customer: {
         name: String,
@@ -38,17 +62,20 @@ const orderSchema = new mongoose.Schema({
     },
     createdAt: { type: Date, default: Date.now }
 });
-
 const Order = mongoose.model("Order", orderSchema);
 
-// ======================
-// MIDDLEWARE
-// ======================
-app.use(cors()); // Doosre domains/ports se request allow karne ke liye
-app.use(express.json()); // Frontend se aane wale JSON data ko parhne ke liye
-app.use(express.static(path.join(__dirname))); // Static files (HTML, CSS, JS) serve karne ke liye
+// 2. Product Model
+const productSchema = new mongoose.Schema({
+    title: String,
+    price: Number,
+    image: String,
+    category: String,
+});
+const Product = mongoose.model("Product", productSchema);
 
-
+// ======================
+// NODEMAILER SETUP
+// ======================
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -57,100 +84,104 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
-    tls: {
-        rejectUnauthorized: false
-    }
+    tls: { rejectUnauthorized: false }
 });
 
-transporter.verify(function (error, success) {
-    if (error) {
-        console.log("❌ SMTP Connection Error (App Password check karein):", error.message);
-    } else {
-        console.log("🚀 SMTP Server Connect Ho Gaya! Email ab jayegi.");
-    }
+transporter.verify((error) => {
+    if (error) console.log("❌ SMTP Connection Error:", error.message);
+    else console.log("🚀 SMTP Server Ready! Email system active.");
 });
 
 // ======================
-// START SERVER
+// ROUTES (Backend Logic)
 // ======================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+
+// --- A. ADMIN PANEL ROUTES ---
+
+// 1. Naya Product ADD karna
+app.post('/api/add-product', async (req, res) => {
+    try {
+        console.log("📥 Incoming Data:", req.body); // Check karne ke liye ke data aa raha hai
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        console.log("🚀 Product saved successfully:", req.body.title);
+        res.status(200).json({ success: true, message: "Product Add Hogya!" });
+    } catch (err) {
+        console.log("❌ DB Save Error:", err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
-// Test email route
-app.get("/test-email", (req, res) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: process.env.EMAIL_USER,
-        subject: "Test Email",
-        text: "This is a test email from server."
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log("Test EMAIL FAILED:", error.message);
-            res.send("Email failed: " + error.message);
-        } else {
-            console.log("Test EMAIL SENT:", info.response);
-            res.send("Email sent successfully!");
-        }
-    });
+// 2. Saare Products GET karna (Inventory list ke liye)
+app.get('/api/get-all-products', async (req, res) => {
+    try {
+        const allProducts = await Product.find();
+        res.json(allProducts);
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
-// ==========================================
-// 🚀 UPDATED ORDER ROUTE
-// ==========================================
+// Ek specific product ki details GET karna
+app.get('/api/get-product/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(404).send("Product nahi mila");
+        res.json(product);
+    } catch (err) {
+        res.status(500).send("Error fetching product");
+    }
+});
+
+// 3. Product DELETE karna
+app.delete('/api/delete-product/:id', async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.send({ success: true, message: "Deleted" });
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+// 4. Saare Orders GET karna (Admin Dashboard ke liye)
+app.get('/api/get-orders', async (req, res) => {
+    try {
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: "Orders fetch nahi ho sakay" });
+    }
+});
+
+// --- B. FRONTEND ORDER ROUTE ---
+
 app.post("/order", async (req, res) => {
-    console.log("1. 📥 Order Request Aayi Hai!"); // Check 1
-
+    console.log("📥 New Order Request Received");
     try {
         const orderData = req.body;
-        console.log("2. 📦 Data Received:", orderData.customer.name); // Check 2
 
-  
+        // Database mein save karein
         const newOrder = new Order(orderData);
         await newOrder.save();
-        console.log("3. ✅ Database: Order Saved"); // Check 3
 
-        
+        // Email ki tayari
         const itemsDetail = orderData.items.map(item =>
-            `- ${item.name} | Qty: ${item.qty} | Color: ${item.color} | Rs ${item.price}`
+            `- ${item.name} | Qty: ${item.qty} | Rs ${item.price}`
         ).join('\n');
 
-    
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: process.env.EMAIL_USER,
-            replyTo: orderData.customer.email,
             subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
-            text: `New Order on Stylish Boot House!
-
-Naam: ${orderData.customer.name}
-Email: ${orderData.customer.email || 'N/A'}
-Address: ${orderData.customer.address}
-Apartment: ${orderData.customer.apartment || 'N/A'}
-Phone: ${orderData.customer.phone || 'N/A'}
-
-${itemsDetail}
-
-💰 TOTAL: Rs ${orderData.total}
-💳 PAYMENT: ${orderData.payment ? orderData.payment.method : 'N/A'}
-
-Check the dashboard or contact the customer!`
+            text: `New Order Alert!\n\nName: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
         };
 
-        console.log("4. 📧 Nodemailer: Email preparing..."); // Check 4
-
-        // 
-        const info = await transporter.sendMail(mailOptions);
-
-        console.log("5. ✅ SUCCESS: Email Sent! ID:", info.messageId); // Check 5
-
+        await transporter.sendMail(mailOptions);
         res.json({ success: true, message: "Order Received & Email Sent!" });
 
     } catch (error) {
-        console.log("❌ ERROR:", error.message);
+        console.log("❌ Order Error:", error.message);
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
