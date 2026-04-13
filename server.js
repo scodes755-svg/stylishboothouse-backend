@@ -137,28 +137,33 @@ app.get('/api/get-orders', async (req, res) => {
 app.post("/order", async (req, res) => {
     try {
         const orderData = req.body;
+
+        // 1. Pehle Database mein save karein
         const newOrder = new Order(orderData);
-        await newOrder.save(); // Pehle DB mein save hoga (Isliye Admin Panel par dikh raha hai)
+        await newOrder.save();
+        console.log("✅ Order saved in Database");
 
-        // Email bhejte waqt hum 'try-catch' alag se lagayenge taake agar email fail ho, tab bhi response chala jaye
-        try {
-            const itemsDetail = orderData.items.map(item => `- ${item.name} | Rs ${item.price}`).join('\n');
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: process.env.EMAIL_USER,
-                subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
-                text: `Order Details:\n\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
-            };
-            await transporter.sendMail(mailOptions);
-        } catch (mailError) {
-            console.log("❌ Email bhejney mein masla: ", mailError.message);
-            // Hum yahan res.json nahi bhejenge, taake niche wala success response jaye
-        }
+        // 2. Email bhejney ki koshish karein (Lekin iske fail hone se order nahi rukega)
+        const itemsDetail = orderData.items.map(item => `- ${item.name} | Rs ${item.price}`).join('\n');
 
-        // Ye line browser ko "Success" ka signal bheje gi
-        res.json({ success: true, message: "Order Received!" });
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER,
+            subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
+            text: `Order Details:\n\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
+        };
+
+        // Hum await nahi lagayenge taake email background mein chalti rahe aur response foran chala jaye
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) console.log("❌ Email failed but order is saved:", error.message);
+            else console.log("📧 Email sent successfully!");
+        });
+
+        // 3. Foran user ko success bhej dein
+        return res.status(200).json({ success: true, message: "Order Received!" });
 
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        console.error("❌ Order Route Error:", error.message);
+        return res.status(500).json({ success: false, message: "Server error occurred" });
     }
 });
