@@ -138,19 +138,26 @@ app.post("/order", async (req, res) => {
     try {
         const orderData = req.body;
         const newOrder = new Order(orderData);
-        await newOrder.save();
+        await newOrder.save(); // Pehle DB mein save hoga (Isliye Admin Panel par dikh raha hai)
 
-        const itemsDetail = orderData.items.map(item => `- ${item.name} | Rs ${item.price}`).join('\n');
+        // Email bhejte waqt hum 'try-catch' alag se lagayenge taake agar email fail ho, tab bhi response chala jaye
+        try {
+            const itemsDetail = orderData.items.map(item => `- ${item.name} | Rs ${item.price}`).join('\n');
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: process.env.EMAIL_USER,
+                subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
+                text: `Order Details:\n\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
+            };
+            await transporter.sendMail(mailOptions);
+        } catch (mailError) {
+            console.log("❌ Email bhejney mein masla: ", mailError.message);
+            // Hum yahan res.json nahi bhejenge, taake niche wala success response jaye
+        }
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER,
-            subject: `🔥 NEW ORDER: ${orderData.customer.name}`,
-            text: `Order Details:\n\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
-        };
+        // Ye line browser ko "Success" ka signal bheje gi
+        res.json({ success: true, message: "Order Received!" });
 
-        await transporter.sendMail(mailOptions);
-        res.json({ success: true });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
