@@ -1143,59 +1143,67 @@
 
     <section class="featured-section">
         <h2 class="section-title">Ladies Super Softs</h2>
-        <div class="featured-grid">
+        <div class="featured-grid" id="product-container">
+            <div id="category-products" class="row">
 
-            <!-- WOMEN PRODUCTS (6) -->
-            <a href="ladies-super-soft1.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-super-soft1.1.jpeg" class="main-img">
-                        <img src="ladies-super-soft1.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
+                <!-- WOMEN PRODUCTS (6) -->
+                <a href="ladies-super-soft1.html" class="featured-card-link">
+                    <div class="featured-card">
+                        <div class="product-image">
+                            <img src="ladies-super-soft1.1.jpeg" class="main-img">
+                            <img src="ladies-super-soft1.2.jpeg" class="hover-img">
+                            <span class="off-tag">10% OFF</span>
+                        </div>
+                        <h3>Formal Super Soft for Women - c3081</h3>
+                        <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs.
+                                5,499</span>
+                        </p>
+                        <button class="add-cart-btn" data-id="1" data-name="Formal Super Soft for Women - c3081"
+                            data-price="5499" data-image="ladies-super-soft1.1.jpeg"
+                            onclick="window.location.href='product-detail.html?id=${p._id}'">
+                            Add to Cart
+                        </button>
                     </div>
-                    <h3>Formal Super Soft for Women - c3081</h3>
-                    <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs. 5,499</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Super Soft for Women - c3081"
-                        data-price="5499" data-image="ladies-super-soft1.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
+                </a>
 
-            <a href="ladies-super-soft2.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-super-soft3.1.jpeg" class="main-img">
-                        <img src="ladies-super-soft3.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
+                <a href="ladies-super-soft2.html" class="featured-card-link">
+                    <div class="featured-card">
+                        <div class="product-image">
+                            <img src="ladies-super-soft3.1.jpeg" class="main-img">
+                            <img src="ladies-super-soft3.2.jpeg" class="hover-img">
+                            <span class="off-tag">10% OFF</span>
+                        </div>
+                        <h3>Formal Super Soft for Women - c3097</h3>
+                        <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs.
+                                3,849</span>
+                        </p>
+                        <button class="add-cart-btn" data-id="2" data-name="Formal Super Soft for Women - c3097"
+                            data-price="3849" data-image="ladies-super-soft3.1.jpeg"
+                            onclick="window.location.href='product-detail.html?id=${p._id}'">
+                            Add to Cart
+                        </button>
                     </div>
-                    <h3>Formal Super Soft for Women - c3097</h3>
-                    <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs. 3,849</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="2" data-name="Formal Super Soft for Women - c3097"
-                        data-price="3849" data-image="ladies-super-soft3.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
+                </a>
 
-            <a href="ladies-super-soft3.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-super-soft5.1.jpeg" class="main-img">
-                        <img src="ladies-super-soft5.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
+                <a href="ladies-super-soft3.html" class="featured-card-link">
+                    <div class="featured-card">
+                        <div class="product-image">
+                            <img src="ladies-super-soft5.1.jpeg" class="main-img">
+                            <img src="ladies-super-soft5.2.jpeg" class="hover-img">
+                            <span class="off-tag">10% OFF</span>
+                        </div>
+                        <h3>Formal Super Soft for Women - c3099</h3>
+                        <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs.
+                                3,849</span>
+                        </p>
+                        <button class="add-cart-btn" data-id="3" data-name="Formal Super Soft for Women - c3099"
+                            data-price="3849" data-image="ladies-super-soft5.1.jpeg"
+                            onclick="window.location.href='product-detail.html?id=${p._id}'">
+                            Add to Cart
+                        </button>
                     </div>
-                    <h3>Formal Super Soft for Women - c3099</h3>
-                    <p class="price"><span class="old-price">Rs. 7,999</span> <span class="new-price">Rs. 3,849</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="3" data-name="Formal Super Soft for Women - c3099"
-                        data-price="3849" data-image="ladies-super-soft5.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
 
         <div id="cartOverlay"></div>
@@ -1519,6 +1527,200 @@
                 });
 
                 totalBox.innerText = "Rs " + total;
+            }
+
+            async function loadCategoryProducts(categoryName) {
+                try {
+                    const res = await fetch('/api/get-all-products');
+                    const products = await res.json();
+                    const container = document.getElementById('category-products');
+
+                    if (!container) return;
+
+                    // Filter: Sirf wahi products jo is category ke hain
+                    const filteredProducts = products.filter(p => p.category === categoryName);
+
+                    if (filteredProducts.length === 0) {
+                        container.innerHTML = `<p class="text-center mt-5">No products available in this category yet.</p>`;
+                        return;
+                    }
+
+                    container.innerHTML = filteredProducts.map(p => `
+            <div class="col-md-3 mb-4">
+                <div class="product-card shadow-sm border p-2">
+                    <img src="${p.image}" class="img-fluid" style="height:200px; object-fit:cover;">
+                    <h5 class="mt-2">${p.title}</h5>
+                    <p class="text-success fw-bold">Rs. ${p.price}</p>
+                    <button onclick="window.location.href='product-detail.html?id=${p._id}'" class="btn btn-dark w-100">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        `).join('');
+                } catch (err) {
+                    console.error("Error loading products:", err);
+                }
+            }
+
+            async function loadLiveItems() {
+                try {
+                    const res = await fetch('/api/get-all-products');
+                    const products = await res.json();
+
+                    // Yahan hum wahi ID dhoond rahe hain jo aapne lagayi hai
+                    const container = document.getElementById('category-products');
+
+                    if (!container) return; // Agar ID nahi mili to ruk jao
+
+                    // Sirf 'heels' wali category filter karein
+                    const liveItems = products.filter(p => p.category === 'super-softs');
+
+                    // Naye products ko purane maal ke niche add karte jao
+                    liveItems.forEach(p => {
+                        container.innerHTML += `
+                <div class="col-md-3 mb-4">
+                    <div class="product-card">
+                        <img src="${p.image}" class="img-fluid" alt="${p.title}">
+                        <h5 class="mt-2">${p.title}</h5>
+                        <p class="price">Rs. ${p.price}</p>
+                        
+                        <button class="add-cart-btn" 
+                            data-id="${p._id}" 
+                            data-name="${p.title}" 
+                            data-price="${p.price}"
+                            data-image="${p.image}"
+                            onclick="window.location.href='product-detail.html?id=${p._id}'">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+                    });
+                } catch (err) {
+                    console.log("Data load nahi ho saka:", err);
+                }
+            }
+
+            // Page khulte hi function chal jaye
+            window.onload = loadLiveItems;
+
+            // Ye code har category page ke end mein laga dein
+            async function displayProducts(category) {
+                const res = await fetch('http://localhost:3000/api/get-all-products');
+                const allProducts = await res.json();
+
+                // Filter karein sirf us category ke joote
+                const myItems = allProducts.filter(p => p.category === category);
+
+                const container = document.getElementById('category-products');
+
+                myItems.forEach(p => {
+                    container.innerHTML += `
+            <div class="product-card">
+                <img src="images/${p.image}">
+                <h5>${p.title}</h5>
+                <p>Rs. ${p.price}</p>
+                <button onclick="window.location.href='product-detail.html?id=${p._id}'">
+                    View Details
+                </button>
+            </div>
+        `;
+                });
+            }
+
+            async function loadWebsiteMaal(categoryName) {
+                try {
+                    const res = await fetch('http://localhost:3000/api/get-all-products');
+                    const products = await res.json();
+                    const container = document.getElementById('category-products');
+
+                    if (!container) return;
+
+                    // Filter: Sirf wahi joote jo is category ke hain
+                    const filtered = products.filter(p => {
+                        console.log("Product Category in DB:", p.category, "Looking for:", categoryName);
+                        return p.category === categoryName;
+                    });
+                    // Pehle container ko bilkul saaf karein taake extra text gayab ho jaye
+                    const productContainer = document.getElementById('product-container');
+                    productContainer.innerHTML = "";
+
+                    filtered.forEach(product => {
+                        // String template ko ek variable mein rakhein taake koi syntax error na ho
+                        const cardHTML = `
+    <div class="featured-card" 
+         onclick="window.location.href='product-detail.html?id=${product._id}'"
+         style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 15px; position: relative; transition: 0.4s; cursor: pointer; text-align: center; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); margin-bottom: 25px; display: inline-block; width: 100%; max-width: 280px; vertical-align: top; margin-right: 10px;">
+        
+        <div style="position: relative; width: 100%; height: 240px; overflow: hidden; border-radius: 15px; background: #252525;">
+            <div style="position: absolute; top: 12px; left: 12px; background: linear-gradient(45deg, #800020, #b01a21); color: #fff; padding: 5px 12px; font-size: 10px; font-weight: bold; border-radius: 50px; z-index: 5; text-transform: uppercase;">
+                10% OFF
+            </div>
+            
+            <img src="${product.image}" 
+                 alt="${product.title}" 
+                 style="width: 100%; height: 100%; object-fit: cover;"
+                 onerror="this.src='placeholder.jpg'">
+        </div>
+
+        <h3 style="font-size: 1.1rem; color: #ffffff; margin: 18px 0 6px; font-weight: 600; font-family: 'Poppins', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${product.title}
+        </h3>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; align-items: baseline;">
+            <span style="color: rgba(255,255,255,0.4); text-decoration: line-through; font-size: 0.85rem;">
+                Rs. ${Math.round(product.price * 1.1)}
+            </span>
+            <span style="color: #fff; font-weight: 700; font-size: 1.2rem;">
+                Rs. ${product.price}
+            </span>
+        </div>
+
+        <button onclick="event.stopPropagation(); addToCartTrigger('${product._id}')"
+                style="width: 100%; padding: 12px; border: none; border-radius: 12px; background: #800020; color: white; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s;"
+                onmouseover="this.style.background='#b01a21'" 
+                onmouseout="this.style.background='#800020'">
+            Add to Cart
+        </button>
+    </div>
+`;
+                        productContainer.innerHTML += cardHTML;
+                    });
+                } catch (err) {
+                    console.error("Maal load nahi ho saka:", err);
+                }
+            }
+
+            // Page ke hisaab se call karein
+            // Agar Heels page hai to 'heels', Slippers hai to 'slippers'
+            loadWebsiteMaal('super-softs');
+
+            function displayProducts(filteredProducts) {
+                const productContainer = document.getElementById('productContainer');
+                productContainer.innerHTML = ""; // Container saaf karke naye/purane sab saath layega
+
+                filteredProducts.forEach(product => {
+                    productContainer.innerHTML += `
+            <div class="featured-card" onclick="window.location.href='product-detail.html?id=${product._id}'">
+                <div class="product-image">
+                    <div class="off-tag">10% OFF</div>
+                    <img src="${product.image}" class="main-img" alt="${product.title}">
+                    <img src="${product.image}" class="hover-img" alt="${product.title}">
+                </div>
+                
+                <h3>${product.title}</h3>
+                
+                <div class="price">
+                    <span class="old-price">Rs. ${Math.round(product.price * 1.1)}</span>
+                    <span class="new-price">Rs. ${product.price}</span>
+                </div>
+                
+                <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart('${product._id}')">
+                    Add to Cart
+                </button>
+            </div>
+        `;
+                });
             }
         </script>
 </body>
