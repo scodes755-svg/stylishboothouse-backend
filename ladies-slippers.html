@@ -1145,116 +1145,10 @@
 
     <section class="featured-section">
         <h2 class="section-title">Ladies Slippers</h2>
-        <div class="featured-grid">
+        <div class="featured-grid" id="product-container">
 
-            <!-- KIDS PRODUCTS (6) -->
-            <a href="ladies-slipper1.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper1.1.jpeg" class="main-img">
-                        <img src="ladies-slipper1.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3004</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3004"
-                        data-price="3749" data-image="ladies-slipper1.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
-
-            <a href="ladies-slipper2.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper3.1.jpeg" class="main-img">
-                        <img src="ladies-slipper3.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3005</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3005"
-                        data-price="3749" data-image="ladies-slipper3.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
-
-            <a href="ladies-slipper4.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper4.1.jpeg" class="main-img">
-                        <img src="ladies-slipper4.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3002</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3002"
-                        data-price="3749" data-image="ladies-slipper4.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
-
-            <a href="ladies-slipper5.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper7.1.jpeg" class="main-img">
-                        <img src="ladies-slipper7.3.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3003</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3003"
-                        data-price="3749" data-image="ladies-slipper7.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
-
-            <a href="ladies-slipper6.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper8.1.jpeg" class="main-img">
-                        <img src="ladies-slipper8.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3007</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3007"
-                        data-price="3749" data-image="ladies-slipper8.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
-
-            <a href="ladies-slipper7.html" class="featured-card-link">
-                <div class="featured-card">
-                    <div class="product-image">
-                        <img src="ladies-slipper10.1.jpeg" class="main-img">
-                        <img src="ladies-slipper10.2.jpeg" class="hover-img">
-                        <span class="off-tag">10% OFF</span>
-                    </div>
-                    <h3>Formal Slippers for Women - c3022</h3>
-                    <p class="price"><span class="old-price">Rs. 4,199</span> <span class="new-price">Rs.
-                            3,749</span>
-                    </p>
-                    <button class="add-cart-btn" data-id="1" data-name="Formal Slippers for Women - c3022"
-                        data-price="3749" data-image="ladies-slipper10.1.jpeg">
-                        Add to Cart
-                    </button>
-                </div>
-            </a>
+            <div id="category-products" class="row">
+            </div>
         </div>
 
         <div id="cartOverlay"></div>
@@ -1283,301 +1177,199 @@
         </a>
 
         <script>
-            const menu = document.querySelector('#mobile-menu');
-            const navLinks = document.querySelector('#nav-list');
-
-            menu.addEventListener('click', () => {
-                navlinks.classList.toggle('active');
-
-                // Hamburger icon ko "X" banane ke liye animation (Optional)
-                menu.classList.toggle('is-active');
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-
-                // --------------------------
-                // MOBILE MENU
-                // --------------------------
-                const mobileMenuBtn = document.getElementById("mobile-menu");
-                const navLinks = document.querySelector(".nav-links");
-
-                mobileMenuBtn.addEventListener("click", () => {
-                    navLinks.classList.toggle("active");
-                    mobileMenuBtn.classList.toggle("is-active"); // hamburger X animation
-                });
-
-                document.querySelectorAll(".nav-item").forEach(item => {
-                    item.addEventListener("click", () => {
-                        navLinks.classList.remove("active");
-                        mobileMenuBtn.classList.remove("is-active");
-                    });
-                });
-
-                // --------------------------
-                // CART PANEL
-                // --------------------------
-                const cartBtn = document.getElementById("cartBtn"); // 🛒 icon
-                const cartPanel = document.getElementById("cartPanel");
-                const cartOverlay = document.getElementById("cartOverlay");
-                const closeCart = document.getElementById("closeCart");
-                const cartItems = document.getElementById("cartItems");
-                const cartTotal = document.getElementById("cartTotal");
-                const checkoutBtn = document.getElementById("checkoutBtn");
-
-                let total = 0;
-
-                // Open cart
-                cartBtn.addEventListener("click", () => {
-                    cartPanel.classList.add("active");
-                    cartOverlay.classList.add("active");
-
-                    // Close mobile menu if open
-                    navLinks.classList.remove("active");
-                    mobileMenuBtn.classList.remove("is-active");
-                });
-
-                // Close cart
-                function closeCartPanel() {
-                    cartPanel.classList.remove("active");
-                    cartOverlay.classList.remove("active");
-                }
-
-                closeCart.addEventListener("click", closeCartPanel);
-                cartOverlay.addEventListener("click", closeCartPanel);
-
-                // Add item to cart function
-                window.addToCart = function (name, price, image, color, size, qty = 1) {
-                    const item = document.createElement("div");
-                    item.className = "cart-item";
-
-                    item.innerHTML = `
-            <img src="${image}" alt="${name}">
-            <div>
-                <h4>${name}</h4>
-                <p>Color: ${color} | Size: ${size} | Qty: ${qty}</p>
-                <span>Rs ${price * qty}</span>
-            </div>
-        `;
-
-                    cartItems.appendChild(item);
-                    total += price * qty;
-                    cartTotal.textContent = `Rs ${total}`;
-                }
-
-                // Checkout button
-                checkoutBtn.addEventListener("click", () => {
-                    if (cartItems.children.length === 0) {
-                        alert("Cart is empty!");
-                        return;
-                    }
-                    window.location.href = "payment.html";
-                });
-
-            });
-
-            document.addEventListener("DOMContentLoaded", function () {
-
-                // -------------------------
-                // MOBILE MENU TOGGLE
-                // -------------------------
-                const mobileMenuBtn = document.getElementById("mobile-menu");
-                const navLinks = document.querySelector(".nav-links");
-
-                mobileMenuBtn.addEventListener("click", () => {
-                    navLinks.classList.toggle("active");  // show/hide mobile links
-                    mobileMenuBtn.classList.toggle("is-active"); // hamburger X animation
-                });
-
-                document.querySelectorAll(".nav-item").forEach(item => {
-                    item.addEventListener("click", () => {
-                        navLinks.classList.remove("active");
-                        mobileMenuBtn.classList.remove("is-active");
-                    });
-                });
-            });
-
-            document.addEventListener("DOMContentLoaded", () => {
-
-                const searchWrap = document.querySelector(".search-wrap");
-                const searchBtn = document.querySelector(".search-btn");
-                const searchInput = document.querySelector(".search-input");
-
-                // Toggle search
-                searchBtn.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    searchWrap.classList.toggle("active");
-
-                    if (searchWrap.classList.contains("active")) {
-                        setTimeout(() => searchInput.focus(), 300);
-                    }
-                });
-
-                // Close on outside click
-                document.addEventListener("click", (e) => {
-                    if (!searchWrap.contains(e.target)) {
-                        searchWrap.classList.remove("active");
-                    }
-                });
-
-                // Close on ESC
-                document.addEventListener("keydown", (e) => {
-                    if (e.key === "Escape") {
-                        searchWrap.classList.remove("active");
-                    }
-                });
-
-            });
+            // --------------------------
+            // 1. CONFIG & INITIAL DATA
+            // --------------------------
             const messages = [
                 "🚚 Free Delivery All Over Pakistan",
                 "⚡ Cash on Delivery Available Nationwide"
             ];
-
-            document.addEventListener("DOMContentLoaded", function () {
-
-                // --------------------------
-                // MOBILE MENU
-                // --------------------------
-                const mobileMenuBtn = document.getElementById("mobile-menu"); // 3-line hamburger
-                const navLinks = document.querySelector(".nav-links"); // ul nav items
-
-                mobileMenuBtn.addEventListener("click", () => {
-                    navLinks.classList.toggle("active"); // show/hide links
-                    mobileMenuBtn.classList.toggle("is-active"); // animate hamburger → X
-                });
-
-                // Close mobile menu on nav item click
-                document.querySelectorAll(".nav-item").forEach(item => {
-                    item.addEventListener("click", () => {
-                        navLinks.classList.remove("active");
-                        mobileMenuBtn.classList.remove("is-active");
-                    });
-                });
-
-            });
-
             let index = 0;
-            const infoText = document.getElementById("infoText");
-
-            setInterval(() => {
-                infoText.style.opacity = "0";
-                infoText.style.transform = "translateY(10px)";
-
-                setTimeout(() => {
-                    index = (index + 1) % messages.length;
-                    infoText.textContent = messages[index];
-                    infoText.style.opacity = "1";
-                    infoText.style.transform = "translateY(0)";
-                }, 400);
-
-            }, 3000);
-            // CART FUNCTIONALITY
             let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-            document.querySelectorAll(".add-cart-btn").forEach(btn => {
-                btn.addEventListener("click", () => {
+            // --------------------------
+            // 2. CORE FUNCTIONS (Cart & UI)
+            // --------------------------
 
-                    const product = {
-                        id: btn.dataset.id,
-                        name: btn.dataset.name,
-                        price: parseInt(btn.dataset.price),
-                        image: btn.dataset.image,
-                        qty: 1
-                    };
+            // Add to Cart Function
+            window.addToCart = function (id, name, price, image) {
+                const product = { id, name, price, image, qty: 1 };
+                const existing = cart.find(item => item.id === id);
 
-                    const existing = cart.find(item => item.id === product.id);
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    cart.push(product);
+                }
 
-                    if (existing) {
-                        existing.qty += 1;
-                    } else {
-                        cart.push(product);
-                    }
-
-                    localStorage.setItem("cart", JSON.stringify(cart));
-
-                    openCart();
-                    updateCartUI();
-                });
-            });
-
-            function updateCartUI() {
-                const cartContent = document.querySelector(".cart-content");
-                const totalBox = document.getElementById("cartTotal");
-
-                cartContent.innerHTML = "";
-                let total = 0;
-
-                cart.forEach(item => {
-                    total += item.price * item.qty;
-
-                    cartContent.innerHTML += `
-            <div class="cart-item">
-                <img src="${item.image}">
-                <div>
-                    <h4>${item.name}</h4>
-                    <p>Rs ${item.price} × ${item.qty}</p>
-                </div>
-            </div>
-        `;
-                });
-
-                totalBox.innerText = "Rs " + total;
-            }
-
-            function openCart() {
-                document.getElementById("cartOverlay").classList.add("active");
-                document.getElementById("cartPanel").classList.add("active");
-            }
-
-            document.getElementById("closeCart").onclick = () => {
-                document.getElementById("cartOverlay").classList.remove("active");
-                document.getElementById("cartPanel").classList.remove("active");
-            }
-
-            document.getElementById("cartBtn").onclick = openCart;
-
-            updateCartUI();
-
-            function removeFromCart(index) {
-                // 1. Cart array se item remove karo
-                cart.splice(index, 1);
-
-                // 2. LocalStorage update karo
                 localStorage.setItem("cart", JSON.stringify(cart));
-
-                // 3. Cart UI refresh karo
                 updateCartUI();
-            }
+                openCart();
+            };
 
+            // Remove from Cart
+            window.removeFromCart = function (index) {
+                cart.splice(index, 1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartUI();
+            };
+
+            // Update Cart Sidebar
             function updateCartUI() {
                 const cartContent = document.querySelector(".cart-content");
                 const totalBox = document.getElementById("cartTotal");
+                if (!cartContent || !totalBox) return;
 
                 cartContent.innerHTML = "";
                 let total = 0;
 
                 if (cart.length === 0) {
-                    cartContent.innerHTML = "<p>No items yet</p>";
+                    cartContent.innerHTML = "<p style='text-align:center; padding:20px;'>Your cart is empty</p>";
                     totalBox.innerText = "Rs 0";
                     return;
                 }
 
-                cart.forEach((item, index) => {
+                cart.forEach((item, idx) => {
                     total += item.price * item.qty;
-
                     cartContent.innerHTML += `
-            <div class="cart-item">
-                <img src="${item.image}">
-                <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <p>Rs ${item.price} × ${item.qty}</p>
+            <div class="cart-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <img src="${item.image}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                <div style="flex: 1;">
+                    <h4 style="font-size: 0.9rem; margin: 0;">${item.name}</h4>
+                    <p style="font-size: 0.8rem; margin: 5px 0;">Rs ${item.price} × ${item.qty}</p>
                 </div>
-                <!-- Remove button automatically -->
-                <button class="remove-item" onclick="removeFromCart(${index})">✖</button>
-            </div>
-        `;
+                <button onclick="removeFromCart(${idx})" style="background: none; border: none; color: red; cursor: pointer; font-size: 1.2rem;">&times;</button>
+            </div>`;
+                });
+                totalBox.innerText = "Rs " + total;
+            }
+
+            // Cart Panel Controls
+            function openCart() {
+                document.getElementById("cartOverlay")?.classList.add("active");
+                document.getElementById("cartPanel")?.classList.add("active");
+            }
+
+            function closeCartPanel() {
+                document.getElementById("cartOverlay")?.classList.remove("active");
+                document.getElementById("cartPanel")?.classList.remove("active");
+            }
+
+            // --------------------------
+            // 3. PAGE SPECIFIC LOADERS
+            // --------------------------
+
+            async function loadSlippersPage() {
+                const container = document.getElementById('product-container') || document.getElementById('category-products');
+                if (!container) return;
+
+                container.innerHTML = "<h2 style='color:white; text-align:center; width:100%;'>Loading...</h2>";
+
+                try {
+                    const res = await fetch('http://localhost:3000/api/get-all-products');
+                    const products = await res.json();
+
+                    // Filter sirf slippers
+                    const slippers = products.filter(p => p.category.toLowerCase().trim() === 'slippers');
+
+                    if (slippers.length === 0) {
+                        container.innerHTML = "<h2 style='color:white; text-align:center; width:100%;'>No Slippers Found!</h2>";
+                        return;
+                    }
+
+                    container.innerHTML = "";
+                    slippers.forEach(p => {
+                        // "images/" check karein agar DB mein path nahi hai
+                        const imgPath = p.image.startsWith('http') ? p.image : `${p.image}`;
+
+                        container.innerHTML += `
+                <div class="featured-card"onclick="window.location.href='product-detail.html?id=${p._id}'"
+                style="display: inline-block; width: 250px; margin: 10px; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; text-align: center; color: white; vertical-align: top;">
+                    <div style="height: 200px; overflow: hidden; border-radius: 10px; background: #222;">
+                        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/200'" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <h3 style="margin: 15px 0 5px; font-size: 1.1rem;">${p.title}</h3>
+                    <p style="color: #800020; font-weight: bold; font-size: 1.2rem;">Rs. ${p.price}</p>
+                    <button onclick="addToCart('${p._id}', '${p.title}', ${p.price}, '${imgPath}')" 
+                            style="width: 100%; padding: 10px; background: #800020; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        Add to Cart
+                    </button>
+                </div>`;
+                    });
+                } catch (err) {
+                    container.innerHTML = "<h2 style='color:white; text-align:center; width:100%;'>Server Error!</h2>";
+                }
+            }
+
+            // --------------------------
+            // 4. EVENT LISTENERS (DOM Ready)
+            // --------------------------
+            document.addEventListener("DOMContentLoaded", function () {
+
+                // Mobile Menu
+                const mobileMenuBtn = document.getElementById("mobile-menu");
+                const navLinks = document.querySelector(".nav-links");
+
+                mobileMenuBtn?.addEventListener("click", () => {
+                    navLinks?.classList.toggle("active");
+                    mobileMenuBtn?.classList.toggle("is-active");
                 });
 
-                totalBox.innerText = "Rs " + total;
+                // Close Menu on Click
+                document.querySelectorAll(".nav-item").forEach(item => {
+                    item.addEventListener("click", () => {
+                        navLinks?.classList.remove("active");
+                        mobileMenuBtn?.classList.remove("is-active");
+                    });
+                });
+
+                // Cart Panel Open/Close
+                document.getElementById("cartBtn")?.addEventListener("click", openCart);
+                document.getElementById("closeCart")?.addEventListener("click", closeCartPanel);
+                document.getElementById("cartOverlay")?.addEventListener("click", closeCartPanel);
+
+                // Search Toggle
+                const searchWrap = document.querySelector(".search-wrap");
+                const searchBtn = document.querySelector(".search-btn");
+                const searchInput = document.querySelector(".search-input");
+
+                searchBtn?.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    searchWrap?.classList.toggle("active");
+                    if (searchWrap?.classList.contains("active")) {
+                        setTimeout(() => searchInput?.focus(), 300);
+                    }
+                });
+
+                // Checkout
+                document.getElementById("checkoutBtn")?.addEventListener("click", () => {
+                    if (cart.length === 0) {
+                        alert("Cart is empty!");
+                    } else {
+                        window.location.href = "payment.html";
+                    }
+                });
+
+                // Initial UI Update
+                updateCartUI();
+
+                // Load Slippers if on Slippers page
+                loadSlippersPage();
+            });
+
+            // Info Bar Slider
+            const infoText = document.getElementById("infoText");
+            if (infoText) {
+                setInterval(() => {
+                    infoText.style.opacity = "0";
+                    infoText.style.transform = "translateY(10px)";
+                    setTimeout(() => {
+                        index = (index + 1) % messages.length;
+                        infoText.textContent = messages[index];
+                        infoText.style.opacity = "1";
+                        infoText.style.transform = "translateY(0)";
+                    }, 400);
+                }, 3000);
             }
         </script>
 </body>
