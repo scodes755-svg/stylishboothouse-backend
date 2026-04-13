@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Stylish Boot House</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --sidebar-bg: #1a1a1a;
+            --accent: #ffd700;
+            --maroon: #800020;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        /* --- MODERN SIDEBAR --- */
+        .sidebar {
+            height: 100vh;
+            background: var(--sidebar-bg);
+            color: white;
+            position: fixed;
+            width: 260px;
+            padding: 25px 15px;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            padding: 10px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .sidebar-brand h4 {
+            color: var(--accent);
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--maroon);
+            color: white !important;
+            transform: translateX(5px);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+
+        .stats-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: 0.3s;
+        }
+
+        /* Form Styling */
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #eee;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.1);
+            border-color: var(--maroon);
+        }
+
+        /* Inventory Grid */
+        .product-card-admin {
+            border-radius: 15px;
+            overflow: hidden;
+            background: white;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .img-container-admin {
+            height: 150px;
+            background: #fdfdfd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .img-container-admin img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        /* Login Overlay Modern */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .btn-maroon {
+            background: var(--maroon);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .sidebar-brand,
+            .nav-link span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box shadow-lg">
+            <h3 class="mb-2">Admin Panel</h3>
+            <p class="text-muted small mb-4">Stylish Boot House | Security Check</p>
+            <input type="password" id="adminPass" class="form-control mb-3" placeholder="Enter Admin Key">
+            <button class="btn-maroon" onclick="checkPass()">Unlock Access</button>
+        </div>
+    </div>
+
+    <div class="sidebar shadow">
+        <div class="sidebar-brand">
+            <h4>STYLISH</h4>
+            <p class="text-muted small">Boot House Admin</p>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link active" id="nav-orders" href="#" onclick="showSection('orders')">
+                <i class="fas fa-shopping-bag"></i> <span>Customer Orders</span>
+            </a>
+            <a class="nav-link" id="nav-inventory" href="#" onclick="showSection('inventory')">
+                <i class="fas fa-boxes"></i> <span>Manage Inventory</span>
+            </a>
+            <a class="nav-link" href="/" target="_blank">
+                <i class="fas fa-external-link-alt"></i> <span>Live Website</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+
+        <div class="stats-header d-flex justify-content-between align-items-center">
+            <h2 id="section-title" class="m-0">Customer Orders</h2>
+            <div class="badge bg-dark p-2 px-3">Status: Authorized</div>
+        </div>
+
+        <div id="section-orders">
+            <div class="card p-0 overflow-hidden">
+                <div class="p-3 bg-white d-flex justify-content-between border-bottom">
+                    <h5 class="m-0">Recent Activity</h5>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="loadOrders()">Refresh Data</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Date</th>
+                                <th>Customer Details</th>
+                                <th>Items Ordered</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-inventory" style="display: none;">
+            <div class="card p-4 mb-4 border-0 shadow-sm">
+                <h5 class="mb-4"><i class="fas fa-plus-circle me-2"></i>Add New Footwear</h5>
+                <form id="addProductForm" class="row g-3" onsubmit="event.preventDefault(); testAdd();">
+                    <div class="col-md-4">
+                        <label class="small text-muted">Product Title</label>
+                        <input type="text" id="pTitle" class="form-control" placeholder="e.g. Red Pencil Heels"
+                            required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small text-muted">Price (PKR)</label>
+                        <input type="number" id="pPrice" class="form-control" placeholder="2500" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small text-muted">Image Filename</label>
+                        <input type="text" id="pImg" class="form-control" placeholder="shoe1.jpg" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="small text-muted">Category</label>
+                        <select id="pCategory" class="form-select">
+                            <option value="heels">Ladies Heels</option>
+                            <option value="sandals">Ladies Sandals</option>
+                            <option value="slippers">Ladies Slippers</option>
+                            <option value="super-softs">Ladies Super Softs</option>
+                            <option value="kids">Kids Collection</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="small text-muted">Description (Sizes, Material, etc.)</label>
+                        <textarea id="pDesc" class="form-control" rows="2"
+                            placeholder="Describe the product..."></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn-maroon">Publish Product</button>
+                    </div>
+                </form>
+            </div>
+
+            <h5 class="mb-3">Live Inventory</h5>
+            <div id="inventory-list" class="row g-3">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function checkPass() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === "stylish789") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Access Granted',
+                    text: 'Welcome to Stylish Boot House Admin',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    background: '#fff',
+                    iconColor: '#800020'
+                });
+                document.getElementById('login-overlay').style.display = 'none';
+                loadOrders();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Incorrect Admin Key!',
+                    confirmButtonColor: '#800020'
+                });
+            }
+        }
+
+        function showSection(section) {
+            document.getElementById('section-orders').style.display = section === 'orders' ? 'block' : 'none';
+            document.getElementById('section-inventory').style.display = section === 'inventory' ? 'block' : 'none';
+            document.getElementById('section-title').innerText = section === 'orders' ? 'Customer Orders' : 'Inventory Management';
+
+            document.getElementById('nav-orders').classList.toggle('active', section === 'orders');
+            document.getElementById('nav-inventory').classList.toggle('active', section === 'inventory');
+
+            if (section === 'inventory') loadInventory();
+        }
+
+        async function loadOrders() {
+            try {
+                const res = await fetch('/api/get-orders');
+                const orders = await res.json();
+                const tbody = document.getElementById('order-table-body');
+                tbody.innerHTML = orders.map(o => `
+                <tr>
+                    <td class="ps-4 small text-muted">${new Date(o.createdAt).toLocaleDateString()}</td>
+                    <td>
+                        <div class="fw-bold">${o.customer?.name || 'Unknown'}</div>
+                        <div class="small text-muted">${o.customer?.address || 'No Address'}</div>
+                    </td>
+                    <td class="small">${o.items?.map(i => i.name).join(", ") || 'No Items'}</td>
+                    <td class="text-center">
+                        <a href="https://wa.me/${o.customer?.phone}" target="_blank" class="btn btn-sm btn-success rounded-pill px-3">
+                            <i class="fab fa-whatsapp"></i> Chat
+                        </a>
+                    </td>
+                </tr>`).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function testAdd() {
+            const title = document.getElementById('pTitle').value;
+            const price = document.getElementById('pPrice').value;
+            const image = document.getElementById('pImg').value;
+            const categorySelect = document.getElementById('pCategory');
+            const category = categorySelect.options[categorySelect.selectedIndex].value;
+            const description = document.getElementById('pDesc').value;
+
+            if (!title || !price || !image) {
+                return Swal.fire({
+                    icon: 'warning',
+                    title: 'Empty Fields!',
+                    text: 'Please fill in all required fields.',
+                    confirmButtonColor: '#800020'
+                });
+            }
+
+            const data = { title, price, image, category, description };
+            try {
+                const res = await fetch('http://localhost:3000/api/add-product', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Product successfully added.',
+                        confirmButtonColor: '#800020'
+                    });
+                    document.getElementById('addProductForm').reset();
+                    loadInventory();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadInventory() {
+            try {
+                const res = await fetch('/api/get-all-products');
+                const products = await res.json();
+                const list = document.getElementById('inventory-list');
+                list.innerHTML = products.map(p => `
+                <div class="col-md-3">
+                    <div class="product-card-admin">
+                        <div class="img-container-admin">
+                            <img src="images/${p.image}" onerror="this.src='https://via.placeholder.com/150'">
+                        </div>
+                        <div class="p-3">
+                            <h6 class="text-truncate mb-1">${p.title}</h6>
+                            <p class="text-success small fw-bold mb-2">Rs. ${p.price}</p>
+                            <button class="btn btn-sm btn-outline-danger w-100" onclick="deleteProduct('${p._id}')">Remove</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+            } catch (err) { console.error(err); }
+        }
+
+        async function deleteProduct(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will remove the product from the inventory!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#800020',
+                cancelButtonColor: '#333',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const res = await fetch(`/api/delete-product/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Product successfully removed from inventory.',
+                            icon: 'success',
+                            confirmButtonColor: '#800020'
+                        });
+                        loadInventory();
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
