@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Stylish Boot House</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #800020;
+            /* Deep Maroon */
+            --primary-hover: #b01a21;
+            --dark-bg: #111111;
+            --glass: rgba(255, 255, 255, 0.05);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            background-color: var(--dark-bg);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-img {
+            height: 55px;
+        }
+
+        .brand-name h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, #b01a21);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-name p {
+            margin: 0;
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #eee;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .announcement {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* --- PRODUCT SECTION --- */
+        .product-page-container {
+            max-width: 1200px;
+            margin: 60px auto;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            padding: 0 20px;
+        }
+
+        /* Gallery Styles */
+        .main-img-box {
+            background: #fdfdfd;
+            border-radius: 25px;
+            padding: 30px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        .main-img-box:hover {
+            transform: scale(1.02);
+        }
+
+        .main-img-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .thumb-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .thumb-item {
+            width: 85px;
+            height: 85px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            overflow: hidden;
+            background: #f9f9f9;
+            transition: var(--transition);
+        }
+
+        .thumb-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .thumb-item.active {
+            border-color: var(--primary);
+        }
+
+        .thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Info Column Styles */
+        .info-col {
+            padding: 10px 0;
+        }
+
+        .info-col h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .price-box {
+            margin: 20px 0;
+        }
+
+        .new-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .old-price {
+            font-size: 20px;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 15px;
+        }
+
+        .selector-label {
+            display: block;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Colors & Sizes */
+        .color-dots {
+            display: flex;
+            gap: 15px;
+        }
+
+        .dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px #ddd;
+            transition: var(--transition);
+        }
+
+        .dot.active {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .size-box {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            width: 50px;
+            height: 50px;
+            border: 1.5px solid #eee;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .size-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .size-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.2);
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 15px;
+            width: fit-content;
+            padding: 5px;
+            margin: 25px 0;
+        }
+
+        .qty-box button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: white;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .qty-box button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .qty-box span {
+            padding: 0 20px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Buttons Styles */
+        .action-btns {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn-cart,
+        .btn-buy,
+        .btn-wa {
+            flex: 1;
+            padding: 18px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-cart {
+            background: #1a233a;
+            color: white;
+        }
+
+        .btn-cart:hover {
+            background: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-buy {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-buy:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(128, 0, 32, 0.2);
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: white;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-wa:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .product-page-container {
+                grid-template-columns: 1fr;
+                margin: 20px auto;
+            }
+
+            .main-img-box {
+                height: 350px;
+            }
+
+            .info-col h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo-area">
+            <img src="logo.png" class="logo-img" alt="SB">
+            <div class="brand-name">
+                <h1>STYLISH</h1>
+                <p>Boot House<br>Since 1990</p>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#">Womens</a>
+            <a href="#">Kids</a>
+            <a href="#">Sale</a>
+        </div>
+    </nav>
+
+    <div class="announcement">✨ PREMIUM QUALITY FOOTWEAR - FREE DELIVERY NATIONWIDE ✨</div>
+
+    <section class="product-page-container">
+        <div class="gallery-col">
+            <div class="main-img-box">
+                <img id="mainDisplayImg" src="" alt="Stylish Boots">
+            </div>
+            <div class="thumb-row" id="thumbContainer"></div>
+        </div>
+
+        <div class="info-col">
+            <span
+                style="color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 12px; text-transform: uppercase;">New
+                Arrival</span>
+            <h1 id="pTitle">Loading Product...</h1>
+
+            <div class="price-box">
+                <span id="pPrice" class="new-price"></span>
+                <span id="pOldPrice" class="old-price"></span>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+            <span class="selector-label"><i class="fas fa-palette"></i> Available Colors</span>
+            <div class="color-dots" id="colorGroup">
+                <div class="dot active" style="background: #111;" onclick="selectColor(this, 'Black')"></div>
+                <div class="dot" style="background: #800020;" onclick="selectColor(this, 'Maroon')"></div>
+                <div class="dot" style="background: #c0c0c0;" onclick="selectColor(this, 'Silver')"></div>
+            </div>
+
+            <span class="selector-label"><i class="fas fa-ruler"></i> Choose Your Size</span>
+            <div class="size-box" id="sizeGroup">
+                <button class="size-btn" onclick="selectSize(this)">7</button>
+                <button class="size-btn active" onclick="selectSize(this)">8</button>
+                <button class="size-btn" onclick="selectSize(this)">9</button>
+                <button class="size-btn" onclick="selectSize(this)">10</button>
+                <button class="size-btn" onclick="selectSize(this)">11</button>
+            </div>
+
+            <div class="qty-box">
+                <button onclick="changeQty(-1)">-</button>
+                <span id="qty">1</span>
+                <button onclick="changeQty(1)">+</button>
+            </div>
+
+            <div class="action-btns">
+                <button onclick="addToCartTrigger()" class="btn-cart"><i class="fas fa-shopping-basket"></i> Add To
+                    Cart</button>
+                <button onclick="placeOrderTrigger()" class="btn-buy">Buy Now</button>
+            </div>
+
+            <a id="whatsapp-link" href="#" target="_blank" style="text-decoration:none;">
+                <button class="btn-wa">
+                    <i class="fab fa-whatsapp" style="font-size: 20px;"></i> Order via WhatsApp
+                </button>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        let currentProduct = null;
+        let currentQty = 1;
+        let selectedSize = "8";
+        let selectedColor = "Black";
+
+        async function initProductPage() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            try {
+                const res = await fetch('http://localhost:3000/api/get-all-products');
+                const products = await res.json();
+                currentProduct = products.find(p => p._id === id);
+
+                if (currentProduct) {
+                    document.getElementById('mainDisplayImg').src = currentProduct.image;
+                    document.getElementById('pTitle').innerText = currentProduct.title;
+                    document.getElementById('pPrice').innerText = `Rs. ${currentProduct.price}`;
+                    document.getElementById('pOldPrice').innerText = `Rs. ${Math.round(currentProduct.price * 1.1)}`;
+
+                    // Angles Logic
+                    const angles = [currentProduct.image];
+                    if (currentProduct.image1) angles.push(currentProduct.image1);
+                    if (currentProduct.image2) angles.push(currentProduct.image2);
+
+                    const thumbContainer = document.getElementById('thumbContainer');
+                    thumbContainer.innerHTML = angles.map((img, i) => `
+                        <div class="thumb-item ${i === 0 ? 'active' : ''}" onclick="updateMainImg(this, '${img}')">
+                            <img src="${img}">
+                        </div>
+                    `).join('');
+
+                    updateWhatsApp();
+                }
+            } catch (err) { console.error("Loading Error:", err); }
+        }
+
+        function updateMainImg(el, src) {
+            document.getElementById('mainDisplayImg').src = src;
+            document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function selectSize(btn) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = btn.innerText;
+            updateWhatsApp();
+        }
+
+        function selectColor(el, color) {
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+            selectedColor = color;
+            updateWhatsApp();
+        }
+
+        function changeQty(val) {
+            currentQty = Math.max(1, currentQty + val);
+            document.getElementById('qty').innerText = currentQty;
+            updateWhatsApp();
+        }
+
+        function updateWhatsApp() {
+            const waLink = document.getElementById('whatsapp-link');
+            if (currentProduct) {
+                const msg = `Assalam o Alaikum,\nI want to order:\n\n*Product:* ${currentProduct.title}\n*Size:* ${selectedSize}\n*Color:* ${selectedColor}\n*Qty:* ${currentQty}\n*Total:* Rs. ${currentProduct.price * currentQty}\n\nPlease confirm my order.`;
+                waLink.href = `https://wa.me/923220245254?text=${encodeURIComponent(msg)}`;
+            }
+        }
+
+        function addToCartTrigger() {
+            if (!currentProduct) return;
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({
+                id: currentProduct._id,
+                title: currentProduct.title,
+                price: currentProduct.price,
+                image: currentProduct.image,
+                quantity: currentQty,
+                size: selectedSize,
+                color: selectedColor
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert("Sahi hai! Item cart mein add ho gaya.");
+        }
+
+        function placeOrderTrigger() {
+            if (!currentProduct) return;
+            window.location.href = `checkout.html?id=${currentProduct._id}&qty=${currentQty}&size=${selectedSize}`;
+        }
+
+        window.onload = initProductPage;
+    </script>
+</body>
+
+</html>
