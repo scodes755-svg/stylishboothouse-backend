@@ -354,11 +354,6 @@
             <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
             <span class="selector-label"><i class="fas fa-palette"></i> Available Colors</span>
-            <div class="color-dots" id="colorGroup">
-                <div class="dot active" style="background: #111;" onclick="selectColor(this, 'Black')"></div>
-                <div class="dot" style="background: #800020;" onclick="selectColor(this, 'Maroon')"></div>
-                <div class="dot" style="background: #c0c0c0;" onclick="selectColor(this, 'Silver')"></div>
-            </div>
 
             <span class="selector-label"><i class="fas fa-ruler"></i> Choose Your Size</span>
             <div class="size-box" id="sizeGroup">
@@ -444,10 +439,31 @@
             updateWhatsApp();
         }
 
-        function selectColor(el, color) {
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-            el.classList.add('active');
-            selectedColor = color;
+        if (currentProduct) {
+            // ... baqi code wahi rahega ...
+
+            const sizeContainer = document.getElementById('sizeGroup');
+
+            // Check karein category Kids hai ya Title mein 'Kids' likha hai
+            const isKids = (currentProduct.category && currentProduct.category.toLowerCase() === 'kids') ||
+                (currentProduct.title && currentProduct.title.toLowerCase().includes('kids'));
+
+            if (isKids) {
+                // Kids ke standard sizes (22 se 30 tak)
+                const kidsSizes = [11, 12, 13, 1, 2, 3, 4, 5];
+                sizeContainer.innerHTML = kidsSizes.map(size => `
+            <button class="size-btn ${size === 12 ? 'active' : ''}" onclick="selectSize(this)">${size}</button>
+        `).join('');
+                selectedSize = "12"; // Default size for kids
+            } else {
+                // Ladies ke standard sizes
+                const ladiesSizes = [7, 8, 9, 10, 11];
+                sizeContainer.innerHTML = ladiesSizes.map(size => `
+            <button class="size-btn ${size === 8 ? 'active' : ''}" onclick="selectSize(this)">${size}</button>
+        `).join('');
+                selectedSize = "8"; // Default size for ladies
+            }
+
             updateWhatsApp();
         }
 
