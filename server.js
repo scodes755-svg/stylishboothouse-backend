@@ -87,26 +87,21 @@ app.get('/api/get-all-products', async (req, res) => {
 // 1. Add New Product
 app.post('/api/add-product', async (req, res) => {
     try {
-        console.log("📥 Adding Product:", req.body);
-        const { title, price, image, category } = req.body;
-
-        if (!title || !price || !image) {
-            return res.status(400).json({ success: false, message: "Missing fields" });
-        }
+        const { title, price, image, category, description } = req.body;
 
         const newProduct = new Product({
             title,
             price: Number(price),
             image,
-            category
+            category,
+            // description: description // Agar aapne schema mein description add ki hai
         });
 
         await newProduct.save();
-        console.log("✅ Product Saved!");
-        res.status(200).json({ success: true, message: "Product added successfully!" });
+        res.status(200).json({ success: true }); // Frontend "res.ok" check karta hai
     } catch (err) {
-        console.error("❌ Add Product Error:", err.message);
-        res.status(500).json({ success: false, message: err.message });
+        console.log("Error detail:", err);
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 
