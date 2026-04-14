@@ -80,6 +80,56 @@ app.get('/api/get-all-products', async (req, res) => {
     }
 });
 
+// ======================
+// 5.1 PRODUCT MANAGEMENT ROUTES (Ye Missing Tha!)
+// ======================
+
+// 1. Add New Product
+app.post('/api/add-product', async (req, res) => {
+    try {
+        console.log("📥 Adding Product:", req.body);
+        const { title, price, image, category } = req.body;
+
+        if (!title || !price || !image) {
+            return res.status(400).json({ success: false, message: "Missing fields" });
+        }
+
+        const newProduct = new Product({
+            title,
+            price: Number(price),
+            image,
+            category
+        });
+
+        await newProduct.save();
+        console.log("✅ Product Saved!");
+        res.status(200).json({ success: true, message: "Product added successfully!" });
+    } catch (err) {
+        console.error("❌ Add Product Error:", err.message);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// 2. Delete Product
+app.delete('/api/delete-product/:id', async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, message: "Product deleted" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// 3. Get All Orders (Admin Dashboard ke liye)
+app.get('/api/get-orders', async (req, res) => {
+    try {
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // --- CHECKOUT / ORDER (The Main Part) ---
 app.post("/order", async (req, res) => {
     try {
