@@ -6,60 +6,56 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const app = express();
+const __dirname = path.resolve(); // Live server par path sahi rakhne ke liye
 
 // ======================
-// 1. MIDDLEWARE (Sabse Aham)
+// 1. MIDDLEWARE (Production Level)
 // ======================
-app.use(cors()); // Isay simple rakhte hain taake block na ho
+app.use(cors({
+    origin: ["https://stylishboothouse.store", "http://localhost:3000"], // Apni live domain add karein
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static Folders
-app.use(express.static(path.join(__dirname)));
-app.use(express.static('public'));
-app.use('/images', express.static('images'));
+// Static Files (Sabse aham live ke liye)
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // ======================
 // 2. DATABASE CONNECTION
 // ======================
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("🚀 MongoDB connected successfully"))
-    .catch(err => console.log("❌ MongoDB Error:", err));
+    .then(() => console.log("🚀 MongoDB Atlas Connected"))
+    .catch(err => console.error("❌ DB Error:", err));
 
 // ======================
-// 3. DATABASE MODELS
+// 3. MODELS
 // ======================
 const orderSchema = new mongoose.Schema({
-    customer: {
-        name: String,
-        email: String,
-        phone: String,
-        address: String,
-        apartment: String
-    },
+    customer: { name: String, email: String, phone: String, address: String },
     items: Array,
     total: Number,
-    payment: { method: String, transactionId: String },
     createdAt: { type: Date, default: Date.now }
 });
 const Order = mongoose.model("Order", orderSchema);
 
 const productSchema = new mongoose.Schema({
-    title: String,
-    price: Number,
-    image: String,
-    category: String,
+    title: String, price: Number, image: String, category: String, description: String
 });
 const Product = mongoose.model("Product", productSchema);
 
 // ======================
-// 4. NODEMAILER (Email Setup)
+// 4. NODEMAILER SETUP (Fixed for Live)
 // ======================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        pass: process.env.EMAIL_PASS // 16-digit App Password here
     }
 });
 
@@ -67,112 +63,53 @@ const transporter = nodemailer.createTransport({
 // 5. ROUTES
 // ======================
 
-// Server Check
-app.get('/api/health', (req, res) => res.send("Server is running fine!"));
-
-// Products API
-app.get('/api/get-all-products', async (req, res) => {
-    try {
-        const allProducts = await Product.find();
-        res.json(allProducts);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// ======================
-// 5.1 PRODUCT MANAGEMENT ROUTES (Ye Missing Tha!)
-// ======================
-
-// 1. Add New Product
+// Add Product Route
 app.post('/api/add-product', async (req, res) => {
     try {
-        const { title, price, image, category, description } = req.body;
-
-        const newProduct = new Product({
-            title,
-            price: Number(price),
-            image,
-            category,
-            // description: description // Agar aapne schema mein description add ki hai
-        });
-
+        const newProduct = new Product(req.body);
         await newProduct.save();
-        res.status(200).json({ success: true }); // Frontend "res.ok" check karta hai
+        res.status(200).json({ success: true });
     } catch (err) {
-        console.log("Error detail:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
 
-// 2. Delete Product
-app.delete('/api/delete-product/:id', async (req, res) => {
-    try {
-        await Product.findByIdAndDelete(req.params.id);
-        res.status(200).json({ success: true, message: "Product deleted" });
-    } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
-    }
+// Get Products
+app.get('/api/get-all-products', async (req, res) => {
+    const products = await Product.find();
+    res.json(products);
 });
 
-// 3. Get All Orders (Admin Dashboard ke liye)
-app.get('/api/get-orders', async (req, res) => {
-    try {
-        const orders = await Order.find().sort({ createdAt: -1 });
-        res.json(orders);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// --- CHECKOUT / ORDER (The Main Part) ---
+// Place Order
 app.post("/order", async (req, res) => {
     try {
-        console.log("📦 Order data received:", req.body);
         const orderData = req.body;
-
-        // Validation: Check karein ke items hain ya nahi
-        if (!orderData.items || orderData.items.length === 0) {
-            return res.status(400).json({ success: false, message: "Cart is empty" });
-        }
-
-        // 1. Save to MongoDB
         const newOrder = new Order(orderData);
         await newOrder.save();
-        console.log("✅ Order saved in Database");
 
-        // 2. Send Email (Independently)
-        const itemsDetail = orderData.items.map(item => `- ${item.name} (Rs ${item.price})`).join('\n');
-
+        // Admin Email Content
+        const itemsDetail = orderData.items.map(i => `- ${i.name} (Rs ${i.price})`).join('\n');
         const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER, // Aapko email milegi
+            from: `"Stylish Order" <${process.env.EMAIL_USER}>`,
+            to: process.env.EMAIL_USER,
             subject: `👟 New Order: ${orderData.customer.name}`,
-            text: `Details:\n\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
+            text: `Customer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
         };
 
-        // Email bhejte waqt wait nahi karenge taake response foran chala jaye
-        transporter.sendMail(mailOptions).catch(err => console.log("📧 Email failed but order saved:", err.message));
+        // Live par wait karna zaroori hai
+        await transporter.sendMail(mailOptions);
 
-        // 3. Send Success Response to Browser
-        res.status(200).json({
-            success: true,
-            message: "Mubarak ho! Order place ho gaya."
-        });
-
+        res.status(200).json({ success: true, message: "Order Placed!" });
     } catch (error) {
-        console.error("❌ Final Error:", error.message);
-        res.status(500).json({
-            success: false,
-            message: "Server internal error: " + error.message
-        });
+        console.error("Order Error:", error);
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
 // ======================
-// 6. START SERVER
+// 6. START SERVER (Live Port Fix)
 // ======================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`✅ Server is alive on port ${PORT}`);
+    console.log(`✅ Stylish Boot House is Live on Port ${PORT}`);
 });
