@@ -49,13 +49,16 @@ const Product = mongoose.model("Product", productSchema);
 // 4. NODEMAILER SETUP (Fixed for Live)
 // ======================
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: "smtp.gmail.com",
     port: 465,
-    secure: true,
+    secure: true, // SSL use karein
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // 16-digit App Password here
+        pass: process.env.EMAIL_PASS
+    },
+    tls: {
+        // Ye line live server par connection ko block hone se rokti hai
+        rejectUnauthorized: false 
     }
 });
 
