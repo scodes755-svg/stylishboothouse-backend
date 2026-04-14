@@ -10,7 +10,6 @@
     <style>
         :root {
             --primary: #800020;
-            /* Deep Maroon */
             --primary-hover: #b01a21;
             --dark-bg: #111111;
             --glass: rgba(255, 255, 255, 0.05);
@@ -106,7 +105,6 @@
             padding: 0 20px;
         }
 
-        /* Gallery Styles */
         .main-img-box {
             background: #fdfdfd;
             border-radius: 25px;
@@ -119,10 +117,6 @@
             border: 1px solid #f0f0f0;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
             transition: var(--transition);
-        }
-
-        .main-img-box:hover {
-            transform: scale(1.02);
         }
 
         .main-img-box img {
@@ -149,11 +143,6 @@
             transition: var(--transition);
         }
 
-        .thumb-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
         .thumb-item.active {
             border-color: var(--primary);
         }
@@ -162,11 +151,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        /* Info Column Styles */
-        .info-col {
-            padding: 10px 0;
         }
 
         .info-col h1 {
@@ -203,7 +187,6 @@
             letter-spacing: 1px;
         }
 
-        /* Colors & Sizes */
         .color-dots {
             display: flex;
             gap: 15px;
@@ -241,16 +224,10 @@
             transition: var(--transition);
         }
 
-        .size-btn:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
         .size-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: 0 8px 20px rgba(128, 0, 32, 0.2);
         }
 
         .qty-box {
@@ -269,24 +246,14 @@
             border: none;
             background: white;
             border-radius: 10px;
-            font-size: 18px;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-        }
-
-        .qty-box button:hover {
-            background: var(--primary);
-            color: white;
         }
 
         .qty-box span {
             padding: 0 20px;
             font-weight: 700;
-            font-size: 18px;
         }
 
-        /* Buttons Styles */
         .action-btns {
             display: flex;
             gap: 20px;
@@ -302,7 +269,6 @@
             border: none;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -316,21 +282,9 @@
             color: white;
         }
 
-        .btn-cart:hover {
-            background: #000;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
         .btn-buy {
             background: var(--primary);
             color: white;
-        }
-
-        .btn-buy:hover {
-            background: var(--primary-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(128, 0, 32, 0.2);
         }
 
         .btn-wa {
@@ -338,11 +292,7 @@
             color: white;
             margin-top: 15px;
             width: 100%;
-        }
-
-        .btn-wa:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+            text-decoration: none;
         }
 
         @media (max-width: 768px) {
@@ -385,7 +335,7 @@
     <section class="product-page-container">
         <div class="gallery-col">
             <div class="main-img-box">
-                <img id="mainDisplayImg" src="" alt="Stylish Boots">
+                <img id="mainDisplayImg" src="placeholder.jpg" alt="Stylish Boots">
             </div>
             <div class="thumb-row" id="thumbContainer"></div>
         </div>
@@ -394,11 +344,11 @@
             <span
                 style="color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 12px; text-transform: uppercase;">New
                 Arrival</span>
-            <h1 id="pTitle">Loading Product...</h1>
+            <h1 id="pTitle">Loading...</h1>
 
             <div class="price-box">
-                <span id="pPrice" class="new-price"></span>
-                <span id="pOldPrice" class="old-price"></span>
+                <span id="pPrice" class="new-price">0</span>
+                <span id="pOldPrice" class="old-price">0</span>
             </div>
 
             <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
@@ -431,13 +381,13 @@
                 <button onclick="placeOrderTrigger()" class="btn-buy">Buy Now</button>
             </div>
 
-            <a id="whatsapp-link" href="#" target="_blank" style="text-decoration:none;">
-                <button class="btn-wa">
-                    <i class="fab fa-whatsapp" style="font-size: 20px;"></i> Order via WhatsApp
-                </button>
+            <a id="whatsapp-link" href="#" target="_blank" class="btn-wa">
+                <i class="fab fa-whatsapp" style="font-size: 20px;"></i> Order via WhatsApp
             </a>
         </div>
     </section>
+
+    <script src="script.js"></script>
 
     <script>
         let currentProduct = null;
@@ -448,9 +398,11 @@
         async function initProductPage() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
+            if (!id) return;
 
             try {
-                const res = await fetch('http://localhost:3000/api/get-all-products');
+                // FIXED: Changed localhost to Live Domain
+                const res = await fetch('https://stylishboothouse.store/api/get-all-products');
                 const products = await res.json();
                 currentProduct = products.find(p => p._id === id);
 
@@ -460,7 +412,6 @@
                     document.getElementById('pPrice').innerText = `Rs. ${currentProduct.price}`;
                     document.getElementById('pOldPrice').innerText = `Rs. ${Math.round(currentProduct.price * 1.1)}`;
 
-                    // Angles Logic
                     const angles = [currentProduct.image];
                     if (currentProduct.image1) angles.push(currentProduct.image1);
                     if (currentProduct.image2) angles.push(currentProduct.image2);
@@ -474,7 +425,10 @@
 
                     updateWhatsApp();
                 }
-            } catch (err) { console.error("Loading Error:", err); }
+            } catch (err) {
+                console.error("Loading Error:", err);
+                document.getElementById('pTitle').innerText = "Error Loading Product";
+            }
         }
 
         function updateMainImg(el, src) {
@@ -514,36 +468,34 @@
         function addToCartTrigger() {
             if (!currentProduct) return;
 
-            // Hum main script.js wala function call karenge taake UI update ho
-            // Agar aapne pichli baar wala 'addToCartDirect' use kiya hai to wo likhein:
-            if (typeof window.addToCartDirect === "function") {
-                window.addToCartDirect(
-                    event,
-                    currentProduct.title,
-                    currentProduct.price,
-                    currentProduct.image,
-                    selectedColor,
-                    selectedSize,
-                    currentQty
-                );
-                alert("Sahi hai! Item cart mein add ho gaya.");
-            } else {
-                // Fallback agar direct function na mile
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                cart.push({
-                    name: currentProduct.title, // Title ki jagah 'name' use karein taake main script se match ho
-                    price: parseInt(currentProduct.price),
-                    image: currentProduct.image,
-                    qty: parseInt(currentQty),
-                    size: selectedSize,
-                    color: selectedColor
-                });
-                localStorage.setItem('cart', JSON.stringify(cart));
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-                // Agar main script load hai to UI update karwao
-                if (typeof updateCartUI === "function") updateCartUI();
-                alert("Item Cart mein chala gaya!");
+            // Fixed keys: name, price, image, qty, size, color
+            const newItem = {
+                name: currentProduct.title,
+                price: parseInt(currentProduct.price),
+                image: currentProduct.image,
+                qty: parseInt(currentQty),
+                size: selectedSize,
+                color: selectedColor
+            };
+
+            const existing = cart.find(item => item.name === newItem.name && item.size === newItem.size);
+            if (existing) {
+                existing.qty += newItem.qty;
+            } else {
+                cart.push(newItem);
             }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Sync with main script UI if exists
+            if (typeof updateCartUI === "function") {
+                updateCartUI();
+                if (typeof openCart === "function") openCart();
+            }
+
+            alert("Sahi hai! Item cart mein add ho gaya.");
         }
 
         function placeOrderTrigger() {
@@ -555,4 +507,4 @@
     </script>
 </body>
 
-</html>c
+</html>
