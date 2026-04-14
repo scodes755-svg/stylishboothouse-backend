@@ -8,12 +8,13 @@ const mongoose = require("mongoose");
 const app = express();
 
 // ======================
-// 1. MIDDLEWARE
+// 1. MIDDLEWARE (Sabse Aham)
 // ======================
-app.use(cors());
+app.use(cors()); // Isay simple rakhte hain taake block na ho
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Static Folders
 app.use(express.static(path.join(__dirname)));
 app.use(express.static('public'));
 app.use('/images', express.static('images'));
@@ -48,30 +49,17 @@ const productSchema = new mongoose.Schema({
     price: Number,
     image: String,
     category: String,
-    description: String // Added this
 });
 const Product = mongoose.model("Product", productSchema);
 
 // ======================
-// 4. NODEMAILER SETUP
+// 4. NODEMAILER (Email Setup)
 // ======================
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // Make sure this is the 16-digit App Password!
-    }
-});
-
-// Verify Transporter (Check if email is ready)
-transporter.verify((error, success) => {
-    if (error) {
-        console.log("❌ Email Setup Error:", error);
-    } else {
-        console.log("📧 Email Server is ready to send messages");
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -79,8 +67,10 @@ transporter.verify((error, success) => {
 // 5. ROUTES
 // ======================
 
+// Server Check
 app.get('/api/health', (req, res) => res.send("Server is running fine!"));
 
+// Products API
 app.get('/api/get-all-products', async (req, res) => {
     try {
         const allProducts = await Product.find();
@@ -90,24 +80,32 @@ app.get('/api/get-all-products', async (req, res) => {
     }
 });
 
+// ======================
+// 5.1 PRODUCT MANAGEMENT ROUTES (Ye Missing Tha!)
+// ======================
+
+// 1. Add New Product
 app.post('/api/add-product', async (req, res) => {
     try {
         const { title, price, image, category, description } = req.body;
+
         const newProduct = new Product({
             title,
             price: Number(price),
             image,
             category,
-            description
+            // description: description // Agar aapne schema mein description add ki hai
         });
+
         await newProduct.save();
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true }); // Frontend "res.ok" check karta hai
     } catch (err) {
-        console.log("❌ Add Product Error:", err);
+        console.log("Error detail:", err);
         res.status(500).json({ success: false, error: err.message });
     }
 });
 
+// 2. Delete Product
 app.delete('/api/delete-product/:id', async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
@@ -117,6 +115,7 @@ app.delete('/api/delete-product/:id', async (req, res) => {
     }
 });
 
+// 3. Get All Orders (Admin Dashboard ke liye)
 app.get('/api/get-orders', async (req, res) => {
     try {
         const orders = await Order.find().sort({ createdAt: -1 });
@@ -126,42 +125,53 @@ app.get('/api/get-orders', async (req, res) => {
     }
 });
 
+// --- CHECKOUT / ORDER (The Main Part) ---
 app.post("/order", async (req, res) => {
     try {
+        console.log("📦 Order data received:", req.body);
         const orderData = req.body;
+
+        // Validation: Check karein ke items hain ya nahi
         if (!orderData.items || orderData.items.length === 0) {
             return res.status(400).json({ success: false, message: "Cart is empty" });
         }
 
+        // 1. Save to MongoDB
         const newOrder = new Order(orderData);
         await newOrder.save();
         console.log("✅ Order saved in Database");
 
+        // 2. Send Email (Independently)
         const itemsDetail = orderData.items.map(item => `- ${item.name} (Rs ${item.price})`).join('\n');
 
         const mailOptions = {
-            from: `"Stylish Boot House" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_USER,
-            subject: `👟 New Order from ${orderData.customer.name}`,
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER, // Aapko email milegi
+            subject: `👟 New Order: ${orderData.customer.name}`,
             text: `Details:\n\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
         };
 
-        // Ab hum email ka wait karenge
-        try {
-            await transporter.sendMail(mailOptions);
-            console.log("📧 Admin Email Sent Successfully!");
-        } catch (emailErr) {
-            console.log("❌ Nodemailer Error Detail:", emailErr.message);
-        }
+        // Email bhejte waqt wait nahi karenge taake response foran chala jaye
+        transporter.sendMail(mailOptions).catch(err => console.log("📧 Email failed but order saved:", err.message));
 
-        res.status(200).json({ success: true, message: "Mubarak ho! Order place ho gaya." });
+        // 3. Send Success Response to Browser
+        res.status(200).json({
+            success: true,
+            message: "Mubarak ho! Order place ho gaya."
+        });
 
     } catch (error) {
         console.error("❌ Final Error:", error.message);
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Server internal error: " + error.message
+        });
     }
 });
 
+// ======================
+// 6. START SERVER
+// ======================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ Server is alive on port ${PORT}`);
