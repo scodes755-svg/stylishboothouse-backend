@@ -513,18 +513,37 @@
 
         function addToCartTrigger() {
             if (!currentProduct) return;
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart.push({
-                id: currentProduct._id,
-                title: currentProduct.title,
-                price: currentProduct.price,
-                image: currentProduct.image,
-                quantity: currentQty,
-                size: selectedSize,
-                color: selectedColor
-            });
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert("Sahi hai! Item cart mein add ho gaya.");
+
+            // Hum main script.js wala function call karenge taake UI update ho
+            // Agar aapne pichli baar wala 'addToCartDirect' use kiya hai to wo likhein:
+            if (typeof window.addToCartDirect === "function") {
+                window.addToCartDirect(
+                    event,
+                    currentProduct.title,
+                    currentProduct.price,
+                    currentProduct.image,
+                    selectedColor,
+                    selectedSize,
+                    currentQty
+                );
+                alert("Sahi hai! Item cart mein add ho gaya.");
+            } else {
+                // Fallback agar direct function na mile
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                cart.push({
+                    name: currentProduct.title, // Title ki jagah 'name' use karein taake main script se match ho
+                    price: parseInt(currentProduct.price),
+                    image: currentProduct.image,
+                    qty: parseInt(currentQty),
+                    size: selectedSize,
+                    color: selectedColor
+                });
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                // Agar main script load hai to UI update karwao
+                if (typeof updateCartUI === "function") updateCartUI();
+                alert("Item Cart mein chala gaya!");
+            }
         }
 
         function placeOrderTrigger() {
@@ -536,4 +555,4 @@
     </script>
 </body>
 
-</html>
+</html>c
