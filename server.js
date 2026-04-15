@@ -129,6 +129,11 @@ app.post("/order", async (req, res) => {
     }
 });
 
+// Wildcard route ki jagah ye middleware end mein daal den
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // ======================
 // 6. START SERVER (Live Port Fix)
 // ======================
