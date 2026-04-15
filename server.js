@@ -58,7 +58,7 @@ const transporter = nodemailer.createTransport({
     },
     tls: {
         // Ye line live server par connection ko block hone se rokti hai
-        rejectUnauthorized: false 
+        rejectUnauthorized: false
     }
 });
 
@@ -87,25 +87,46 @@ app.get('/api/get-all-products', async (req, res) => {
 app.post("/order", async (req, res) => {
     try {
         const orderData = req.body;
+        console.log("📦 Processing order for:", orderData.customer.name);
+
+        // 1. Save to Database (Pehle save karein taake record rahe)
         const newOrder = new Order(orderData);
         await newOrder.save();
 
-        // Admin Email Content
+        // 2. Email Setup
         const itemsDetail = orderData.items.map(i => `- ${i.name} (Rs ${i.price})`).join('\n');
+
         const mailOptions = {
-            from: `"Stylish Order" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_USER,
-            subject: `👟 New Order: ${orderData.customer.name}`,
-            text: `Customer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
+            from: `"Stylish Boot House" <${process.env.EMAIL_USER}>`,
+            to: process.env.EMAIL_USER, // Admin Email
+            subject: `👟 Naya Order: ${orderData.customer.name}`,
+            text: `Order Details:\n\nCustomer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\nAddress: ${orderData.customer.address}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
         };
 
-        // Live par wait karna zaroori hai
-        await transporter.sendMail(mailOptions);
+        // 3. Send Email with AWAIT and Response Check
+        // Live server par await lagana lazmi hai warna process terminate ho jata hai
+        try {
+            const info = await transporter.sendMail(mailOptions);
+            console.log("📧 Email Sent Successfully:", info.response);
 
-        res.status(200).json({ success: true, message: "Order Placed!" });
+            // Success response tab bhejenge jab email chali jaye
+            return res.status(200).json({
+                success: true,
+                message: "Order placed and Email sent to admin!"
+            });
+
+        } catch (emailError) {
+            console.error("❌ Nodemailer Error:", emailError.message);
+            // Agar email fail ho jaye lekin order save ho chuka ho
+            return res.status(200).json({
+                success: true,
+                message: "Order saved but email notification failed. Check logs."
+            });
+        }
+
     } catch (error) {
-        console.error("Order Error:", error);
-        res.status(500).json({ success: false, message: error.message });
+        console.error("❌ Server Error:", error.message);
+        res.status(500).json({ success: false, message: "Server error: " + error.message });
     }
 });
 
