@@ -1,5 +1,10 @@
 // ==========================
-// 1. MOBILE MENU & NAVIGATION
+// 1. CONFIGURATION & URLS
+// ==========================
+const API_URL = "https://stylishboothouse-backend.onrender.com";
+
+// ==========================
+// 2. MOBILE MENU & UI
 // ==========================
 const menu = document.querySelector('#mobile-menu');
 const navLinksContainer = document.querySelector('.nav-links');
@@ -9,16 +14,9 @@ if (menu && navLinksContainer) {
         navLinksContainer.classList.toggle('active');
         menu.classList.toggle('is-active');
     });
-
-    document.querySelectorAll(".nav-item").forEach(item => {
-        item.addEventListener("click", () => {
-            navLinksContainer.classList.remove("active");
-            menu.classList.remove("is-active");
-        });
-    });
 }
 
-// Location Dropdown Logic
+// Location Dropdown
 document.addEventListener("DOMContentLoaded", () => {
     const locationDropdown = document.querySelector(".location-dropdown > .nav-item");
     const dropdownMap = document.querySelector(".location-dropdown .dropdown-map");
@@ -32,84 +30,93 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================
-// 2. SEARCH FUNCTIONALITY
+// 3. PRODUCT RENDERING (HTML Template)
 // ==========================
-document.addEventListener("DOMContentLoaded", () => {
-    const searchInput = document.querySelector(".search-input");
-    const searchBtn = document.querySelector(".search-btn");
-    const searchWrap = document.querySelector(".search-wrap");
+function createProductCard(p) {
+    // Agar image URL hai to theek, warna placeholder
+    const imgSrc = p.image.startsWith('http') ? p.image : `/images/${p.image}`;
 
-    function goToSearchPage() {
-        const query = searchInput.value.trim();
-        if (query !== "") {
-            window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+    return `
+        <div class="product-card" onclick="window.location.href='detailed-products.html?id=${p._id}'">
+            <img src="${imgSrc}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
+            <h3>${p.title}</h3>
+            <p class="price">Rs. ${p.price}</p>
+            <button class="view-btn">View Details</button>
+            <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${p.title}', ${p.price}, '${imgSrc}')" 
+                style="margin-top:10px; background:#b02a37; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">
+                Add to Cart
+            </button>
+        </div>
+    `;
+}
+
+// ==========================
+// 4. LOAD PRODUCTS FROM DATABASE
+// ==========================
+async function loadHomeProducts() {
+    try {
+        console.log("Fetching products from Live Server...");
+        const res = await fetch(`${API_URL}/api/get-all-products`);
+        const products = await res.json();
+
+        if (!products || products.length === 0) return;
+
+        // Ladies Section (Heels, Sandals, Slippers, Super Softs)
+        const ladiesContainer = document.getElementById('ladies-featured');
+        if (ladiesContainer) {
+            const ladiesList = products.filter(p =>
+                ['heels', 'sandals', 'slippers', 'super-softs', 'ladies'].includes(p.category.toLowerCase())
+            ).reverse().slice(0, 6);
+            ladiesContainer.innerHTML = ladiesList.map(p => createProductCard(p)).join('');
         }
-    }
 
-    if (searchBtn && searchInput) {
-        searchBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (searchWrap.classList.contains("active") && searchInput.value !== "") {
-                goToSearchPage();
-            } else {
-                searchWrap.classList.toggle("active");
-                if (searchWrap.classList.contains("active")) {
-                    setTimeout(() => searchInput.focus(), 300);
-                }
-            }
-        });
+        // Kids Section
+        const kidsContainer = document.getElementById('kids-featured');
+        if (kidsContainer) {
+            const kidsList = products.filter(p => p.category.toLowerCase() === 'kids').reverse().slice(0, 6);
+            kidsContainer.innerHTML = kidsList.map(p => createProductCard(p)).join('');
+        }
 
-        searchInput.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                goToSearchPage();
-            }
-        });
+    } catch (err) {
+        console.error("Error loading products:", err);
     }
-});
+}
 
 // ==========================
-// 3. CART SYSTEM (LocalStorage)
+// 5. SEARCH LOGIC
+// ==========================
+const searchInput = document.querySelector(".search-input");
+const searchBtn = document.querySelector(".search-btn");
+const searchWrap = document.querySelector(".search-wrap");
+
+if (searchBtn && searchInput) {
+    searchBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const query = searchInput.value.trim();
+        if (searchWrap.classList.contains("active") && query !== "") {
+            window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+        } else {
+            searchWrap.classList.toggle("active");
+            searchInput.focus();
+        }
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            window.location.href = `search.html?q=${encodeURIComponent(searchInput.value.trim())}`;
+        }
+    });
+}
+
+// ==========================
+// 6. CART SYSTEM (LocalStorage)
 // ==========================
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-const cartBtn = document.getElementById("cartBtn");
-const cartPanel = document.getElementById("cartPanel");
-const cartOverlay = document.getElementById("cartOverlay");
-const closeCart = document.getElementById("closeCart");
-const cartContent = document.querySelector(".cart-content");
-const cartTotal = document.getElementById("cartTotal");
+window.addToCart = function (name, price, image) {
+    const product = { name, price: parseInt(price), image, qty: 1 };
+    const existing = cart.find(item => item.name === name);
 
-function openCart() {
-    if (cartPanel && cartOverlay) {
-        cartPanel.classList.add("active");
-        cartOverlay.classList.add("active");
-    }
-}
-
-function closeCartPanel() {
-    if (cartPanel && cartOverlay) {
-        cartPanel.classList.remove("active");
-        cartOverlay.classList.remove("active");
-    }
-}
-
-if (cartBtn) cartBtn.onclick = openCart;
-if (closeCart) closeCart.onclick = closeCartPanel;
-if (cartOverlay) cartOverlay.onclick = closeCartPanel;
-
-window.addToCart = function (name, price, image, color = "Standard", size = "N/A", qty = 1) {
-    const product = {
-        id: name.replace(/\s+/g, '-').toLowerCase(),
-        name,
-        price: parseInt(price),
-        image,
-        color,
-        size,
-        qty: parseInt(qty)
-    };
-
-    const existing = cart.find(item => item.name === product.name);
     if (existing) {
         existing.qty += 1;
     } else {
@@ -118,7 +125,7 @@ window.addToCart = function (name, price, image, color = "Standard", size = "N/A
 
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI();
-    openCart();
+    alert(`${name} cart mein add ho gaya!`);
 };
 
 window.removeFromCart = function (index) {
@@ -128,82 +135,43 @@ window.removeFromCart = function (index) {
 };
 
 function updateCartUI() {
+    const cartContent = document.querySelector(".cart-content");
+    const cartTotal = document.getElementById("cartTotal");
     if (!cartContent || !cartTotal) return;
-    cartContent.innerHTML = "";
-    let total = 0;
 
-    if (cart.length === 0) {
-        cartContent.innerHTML = "<p style='text-align:center; padding:20px;'>No items yet</p>";
-        cartTotal.innerText = "Rs 0";
-        return;
-    }
+    let total = 0;
+    cartContent.innerHTML = cart.length === 0 ? "<p>No items yet</p>" : "";
 
     cart.forEach((item, index) => {
         total += item.price * item.qty;
         cartContent.innerHTML += `
             <div class="cart-item">
-                <img src="${item.image}" onerror="this.src='https://via.placeholder.com/50'">
+                <img src="${item.image}" width="50">
                 <div class="cart-item-info">
                     <h4>${item.name}</h4>
-                    <p>Size: ${item.size || "—"} | Color: ${item.color || "—"}</p>
                     <p>Rs ${item.price} × ${item.qty}</p>
                 </div>
-                <button class="remove-item" onclick="removeFromCart(${index})">✖</button>
+                <button onclick="removeFromCart(${index})">✖</button>
             </div>
         `;
     });
     cartTotal.innerText = "Rs " + total;
 }
 
+// Cart Panel Controls
+const cartBtn = document.getElementById("cartBtn");
+const cartPanel = document.getElementById("cartPanel");
+const closeCart = document.getElementById("closeCart");
+const cartOverlay = document.getElementById("cartOverlay");
+
+if (cartBtn) cartBtn.onclick = () => { cartPanel.classList.add("active"); cartOverlay.classList.add("active"); };
+if (closeCart) closeCart.onclick = () => { cartPanel.classList.remove("active"); cartOverlay.classList.remove("active"); };
+if (cartOverlay) cartOverlay.onclick = () => { cartPanel.classList.remove("active"); cartOverlay.classList.remove("active"); };
+
 // ==========================
-// 4. ORDER & API CALLS (Fixed for Live Site)
+// 7. INITIALIZE ON LOAD
 // ==========================
-
-// Render Backend URL
-const API_URL = "https://stylishboothouse-backend.onrender.com";
-
-// Place Order Function
-// Place Order Function
-async function placeOrder(orderData) {
-    try {
-        const response = await fetch("https://stylishboothouse-backend.onrender.com/order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderData)
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert("Mubarak ho! Order place ho gaya hai.");
-            localStorage.removeItem("cart");
-            window.location.href = "success.html";
-        } else {
-            alert("Masla aaya: " + result.message);
-        }
-    } catch (error) {
-        alert("Server se connect nahi ho pa raha!");
-    }
-}
-
-// Load Home Featured
-async function loadHomeFeatured() {
-    try {
-        const res = await fetch("https://stylishboothouse-backend.onrender.com/api/get-all-products");
-        const allProducts = await res.json();
-
-        // Isme join('') lazmi lagayein
-        const ladiesContainer = document.getElementById('ladies-featured');
-        if (ladiesContainer) {
-            const ladiesProducts = allProducts.filter(p => ['heels', 'sandals', 'slippers', 'ladies'].includes(p.category.toLowerCase())).slice(0, 6);
-            ladiesContainer.innerHTML = ladiesProducts.map(p => createCard(p)).join('');
-        }
-
-        const kidsContainer = document.getElementById('kids-featured');
-        if (kidsContainer) {
-            const kidsProducts = allProducts.filter(p => p.category.toLowerCase() === 'kids').slice(0, 6);
-            kidsContainer.innerHTML = kidsProducts.map(p => createCard(p)).join('');
-        }
-    } catch (err) {
-        console.error("Data load error:", err);
-    }
-}
+document.addEventListener("DOMContentLoaded", () => {
+    loadHomeProducts();
+    updateCartUI();
+});
