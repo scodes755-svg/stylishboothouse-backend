@@ -163,81 +163,47 @@ function updateCartUI() {
 const API_URL = "https://stylishboothouse-backend.onrender.com";
 
 // Place Order Function
+// Place Order Function
 async function placeOrder(orderData) {
     try {
-        console.log("Sending order to server...");
-        // FIXED: Using Render Backend URL
-        const response = await fetch(`${API_URL}/order`, {
+        const response = await fetch("https://stylishboothouse-backend.onrender.com/order", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(orderData)
         });
 
         const result = await response.json();
-
         if (result.success) {
             alert("Mubarak ho! Order place ho gaya hai.");
-            cart = [];
-            localStorage.setItem("cart", JSON.stringify(cart));
+            localStorage.removeItem("cart");
             window.location.href = "success.html";
         } else {
             alert("Masla aaya: " + result.message);
         }
     } catch (error) {
-        console.error("Error sending order:", error);
-        alert("Server se connect nahi ho pa raha! Make sure backend is live.");
+        alert("Server se connect nahi ho pa raha!");
     }
 }
 
-// Load Home Featured Products
+// Load Home Featured
 async function loadHomeFeatured() {
     try {
-        console.log("Fetching products for home...");
-        // FIXED: Using Render Backend URL
-        const res = await fetch(`${API_URL}/api/get-all-products`);
+        const res = await fetch("https://stylishboothouse-backend.onrender.com/api/get-all-products");
         const allProducts = await res.json();
 
-        allProducts.reverse();
-
-        const ladiesProducts = allProducts.filter(p => {
-            const cat = p.category.toLowerCase();
-            return cat === 'heels' || cat === 'sandals' || cat === 'slippers' || cat === 'super-softs' || cat === 'ladies';
-        }).slice(0, 6);
-
-        const kidsProducts = allProducts.filter(p => p.category.toLowerCase() === 'kids').slice(0, 6);
-
+        // Isme join('') lazmi lagayein
         const ladiesContainer = document.getElementById('ladies-featured');
+        if (ladiesContainer) {
+            const ladiesProducts = allProducts.filter(p => ['heels', 'sandals', 'slippers', 'ladies'].includes(p.category.toLowerCase())).slice(0, 6);
+            ladiesContainer.innerHTML = ladiesProducts.map(p => createCard(p)).join('');
+        }
+
         const kidsContainer = document.getElementById('kids-featured');
-
-        const createCard = (product) => `
-            <div class="featured-card" 
-                 onclick="window.location.href='product-detail.html?id=${product._id}'"
-                 style="background: #ffffff; border-radius: 20px; padding: 15px; margin: 10px; display: inline-block; width: 100%; max-width: 250px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; cursor:pointer;">
-                <div style="position: relative; height: 180px; overflow: hidden; border-radius: 15px; background: #f0f0f0; margin-bottom: 10px;">
-                    <img src="${product.image}" onerror="this.src='https://via.placeholder.com/200x180?text=No+Image'" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <h3 style="font-size: 1.1rem; margin: 10px 0; color: #333; font-weight: 600;">${product.title}</h3>
-                <div style="margin-bottom: 15px;">
-                    <span style="color: #888; text-decoration: line-through; font-size: 0.85rem;">Rs. ${Math.round(product.price * 1.2)}</span>
-                    <span style="color: #b02a37; font-weight: bold; margin-left: 10px; font-size: 1rem;">Rs. ${product.price}</span>
-                </div>
-                <button onclick="event.stopPropagation(); addToCart('${product.title}', ${product.price}, '${product.image}')" 
-                        style="width: 100%; padding: 12px; background: #b02a37; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
-                    Add to Cart
-                </button>
-            </div>
-        `;
-
-        if (ladiesContainer) ladiesContainer.innerHTML = ladiesProducts.map(p => createCard(p)).join('');
-        if (kidsContainer) kidsContainer.innerHTML = kidsProducts.map(p => createCard(p)).join('');
-
+        if (kidsContainer) {
+            const kidsProducts = allProducts.filter(p => p.category.toLowerCase() === 'kids').slice(0, 6);
+            kidsContainer.innerHTML = kidsProducts.map(p => createCard(p)).join('');
+        }
     } catch (err) {
-        console.error("Data load nahi ho raha:", err);
+        console.error("Data load error:", err);
     }
 }
-
-// ==========================
-// 5. UI EFFECTS
-// ==========================
-// ... (Baaki slider aur info bar ka code pehle wala hi hai)
-document.addEventListener('DOMContentLoaded', loadHomeFeatured);
