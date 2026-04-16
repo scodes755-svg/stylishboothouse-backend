@@ -6,28 +6,30 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const app = express();
-const __dirname = path.resolve(); // Live server par path sahi rakhne ke liye
 
 // ======================
-// 1. MIDDLEWARE (Production Level)
+// 1. MIDDLEWARE & CORS FIX
 // ======================
 app.use(cors({
-    origin: ["https://stylishboothouse.store", "http://localhost:3000"], // Apni live domain add karein
+    origin: "*", 
+    methods: ["GET", "POST", "DELETE"], // DELETE yahan add kar diya hai
     credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static Files (Sabse aham live ke liye)
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(express.static(path.join(process.cwd(), 'public'))); 
+app.use(express.static(process.cwd())); 
+app.use('/images', express.static(path.join(process.cwd(), 'images')));
 
 // ======================
 // 2. DATABASE CONNECTION
 // ======================
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("🚀 MongoDB Atlas Connected"))
-    .catch(err => console.error("❌ DB Error:", err));
+mongoose.connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000
+})
+.then(() => console.log("🚀 MongoDB Atlas Connected"))
+.catch(err => console.error("❌ DB Error:", err));
 
 // ======================
 // 3. MODELS
@@ -46,19 +48,13 @@ const productSchema = new mongoose.Schema({
 const Product = mongoose.model("Product", productSchema);
 
 // ======================
-// 4. NODEMAILER SETUP (Fixed for Live)
+// 4. NODEMAILER SETUP
 // ======================
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // SSL use karein
+    service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        // Ye line live server par connection ko block hone se rokti hai
-        rejectUnauthorized: false 
     }
 });
 
@@ -66,31 +62,48 @@ const transporter = nodemailer.createTransport({
 // 5. ROUTES
 // ======================
 
-// Add Product Route
+// --- GET ALL PRODUCTS ---
+app.get('/api/get-all-products', async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- ADD PRODUCT (For Admin Panel) ---
 app.post('/api/add-product', async (req, res) => {
     try {
         const newProduct = new Product(req.body);
         await newProduct.save();
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, message: "Product added!" });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
 });
 
-// Get Products
-app.get('/api/get-all-products', async (req, res) => {
-    const products = await Product.find();
-    res.json(products);
+// --- DELETE PRODUCT (For Admin Panel) ---
+app.delete('/api/delete-product/:id', async (req, res) => {
+    try {
+        const result = await Product.findByIdAndDelete(req.params.id);
+        if (result) {
+            res.status(200).json({ success: true, message: "Product deleted!" });
+        } else {
+            res.status(404).json({ success: false, message: "Product not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
 });
 
-// Place Order
+// --- PLACE ORDER ---
 app.post("/order", async (req, res) => {
     try {
         const orderData = req.body;
         const newOrder = new Order(orderData);
         await newOrder.save();
 
-        // Admin Email Content
         const itemsDetail = orderData.items.map(i => `- ${i.name} (Rs ${i.price})`).join('\n');
         const mailOptions = {
             from: `"Stylish Order" <${process.env.EMAIL_USER}>`,
@@ -99,20 +112,19 @@ app.post("/order", async (req, res) => {
             text: `Customer: ${orderData.customer.name}\nPhone: ${orderData.customer.phone}\n\nItems:\n${itemsDetail}\n\nTotal: Rs ${orderData.total}`
         };
 
-        // Live par wait karna zaroori hai
         await transporter.sendMail(mailOptions);
-
         res.status(200).json({ success: true, message: "Order Placed!" });
     } catch (error) {
-        console.error("Order Error:", error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
 
+// Front-end serve karne ke liye static middleware se handle ho jayega
+
 // ======================
-// 6. START SERVER (Live Port Fix)
+// 6. START SERVER
 // ======================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`✅ Stylish Boot House is Live on Port ${PORT}`);
 });
